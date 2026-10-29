@@ -1,24 +1,26 @@
-# Scholara Deployment Guide 🚀
+# Scholara OS — Production Deployment & Operations Guide 🚀
 
-This repository is fully configured, secured, and ready for deployment across both **frontend** and **backend**. You can deploy it using either a **unified single-service deployment** (recommended for simplicity) or a **decoupled deployment** (frontend on Vercel/Netlify, backend on Render/Railway).
-
----
-
-## Architecture Overview
-
-- **Frontend**: React 19 + Vite 8 + TailwindCSS with React Router and Material Symbols.
-- **Backend**: Node.js + Express 4.21 with security headers, CORS protection, REST API, and resilient data persistence.
-- **Unified Mode**: When `frontend/dist` is built, Express automatically serves the frontend Single Page Application (SPA) with full client-side route fallback alongside the `/api` endpoints on a single port.
+This repository is fully configured, secured, and ready for deployment across both **frontend** and **backend**.
 
 ---
 
-## Option 1: Unified Single-Service Deployment (Recommended)
+## 1. Architecture Overview
 
-Host both Frontend & Backend together on platforms like **Render**, **Railway**, **Fly.io**, or any VPS.
+- **Frontend**: React 19 + Vite 8 + Tailwind CSS 3.4 with React Router and Material Symbols. Built to `frontend/dist`.
+- **Backend**: Node.js + Express 4.21 with security headers (nosniff, SAMEORIGIN, XSS filter), sliding-window rate limiting (600 req/min per IP), REST API, and SQLite 3 WAL mode with WebSockets (`/ws`) and Server-Sent Events (`/api/realtime/stream`).
+- **Unified Mode**: When `frontend/dist` is built, Express automatically serves the frontend Single Page Application (SPA) with full client-side route fallback alongside `/api` endpoints on a single port.
 
-### Render / Railway Configuration:
-- **Root Directory**: `stitch_scholara_student_productivity_hub` (repository root)
-- **Environment**: Node
+---
+
+## 2. Option 1: Unified Single-Service Deployment (Recommended)
+
+Host both Frontend & Backend together on platforms that provide **persistent writable disk storage** (e.g. **Railway**, **Render with Persistent Disk**, **Fly.io with Volumes**, or a **VPS / EC2**).
+
+> [!IMPORTANT]
+> **Persistent Disk Requirement for SQLite**:
+> SQLite stores data in `backend/src/data/database.sqlite`. Stateless serverless hosts (like standard Vercel serverless functions or ephemeral Heroku dynos) wipe disk state on dyno cycle. Ensure your deployment platform mounts a persistent volume to `backend/src/data` or use a VPS / Railway service with persistent volume attached.
+
+### Railway / Render Configuration:
 - **Build Command**:
   ```bash
   npm run install:all && npm run build
@@ -30,25 +32,19 @@ Host both Frontend & Backend together on platforms like **Render**, **Railway**,
 - **Environment Variables**:
   ```env
   NODE_ENV=production
-  PORT=10000
+  PORT=5000
   HOST=0.0.0.0
   CLIENT_ORIGIN=*
   ```
 
 ---
 
-## Option 2: Decoupled Deployment
+## 3. Option 2: Decoupled Deployment
 
-### 1. Deploy Backend (Render / Railway / Fly.io / Heroku)
+### 1. Backend (Railway / Render / Fly.io with Persistent Volume)
 - **Root Directory**: `backend`
-- **Build Command**:
-  ```bash
-  npm install
-  ```
-- **Start Command**:
-  ```bash
-  npm start
-  ```
+- **Build Command**: `npm install`
+- **Start Command**: `npm start`
 - **Environment Variables**:
   ```env
   NODE_ENV=production
@@ -56,28 +52,23 @@ Host both Frontend & Backend together on platforms like **Render**, **Railway**,
   HOST=0.0.0.0
   CLIENT_ORIGIN=https://your-frontend-app.vercel.app
   ```
-- **Verify Health**:
-  Visit `https://your-backend-app.onrender.com/api/health`
+- **Health Verification**:
+  Visit `https://your-backend-app/api/health`
 
-### 2. Deploy Frontend (Vercel / Netlify / Cloudflare Pages)
+### 2. Frontend (Vercel / Netlify / Cloudflare Pages)
 - **Root Directory**: `frontend`
 - **Framework Preset**: Vite
-- **Build Command**:
-  ```bash
-  npm run build
-  ```
+- **Build Command**: `npm run build`
 - **Output Directory**: `dist`
 - **Environment Variables**:
   ```env
-  VITE_API_URL=https://your-backend-app.onrender.com/api
+  VITE_API_URL=https://your-backend-app/api
   ```
-- **SPA Routing**: `vercel.json` is already included to ensure direct routes (`/dashboard`, `/todo`, `/assignments`, etc.) do not 404 on page reload.
 
 ---
 
-## Option 3: Docker Deployment
+## 4. Option 3: Docker Deployment with Persistent Volume
 
-Create a `Dockerfile` in the root:
 ```dockerfile
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -90,40 +81,76 @@ COPY --from=builder /app /app
 ENV NODE_ENV=production
 ENV PORT=5000
 ENV HOST=0.0.0.0
+VOLUME ["/app/backend/src/data"]
 EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-Build and run:
+Run container with mounted persistent volume:
 ```bash
-docker build -t scholara .
-docker run -p 5000:5000 scholara
+docker run -d \
+  -p 5000:5000 \
+  -v scholara_data:/app/backend/src/data \
+  --name scholara-hub \
+  scholara
 ```
 
 ---
 
-## Environment Variables Reference
+## 5. Database Backup and Restore Procedures
 
-### Backend (`backend/.env`):
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `5000` | Port for the Express server to listen on |
-| `HOST` | `0.0.0.0` | Host IP binding (use `0.0.0.0` for containers/cloud) |
-| `NODE_ENV` | `production` | Environment mode (`development` or `production`) |
-| `CLIENT_ORIGIN` | `*` | Allowed CORS origins (e.g. `https://my-app.vercel.app` or `*`) |
+### Safe Online Backup
+SQLite Write-Ahead Logging (WAL) mode enables non-blocking online backups while the server is active:
+```bash
+# 1. Truncate WAL journal
+sqlite3 backend/src/data/database.sqlite "PRAGMA wal_checkpoint(TRUNCATE);"
 
-### Frontend (`frontend/.env`):
-| Variable | Default | Description |
-|---|---|---|
-| `VITE_API_URL` | `/api` | Base URL for API requests. Leave unset if deploying unified or set to your backend URL if decoupled. |
+# 2. Generate point-in-time snapshot
+sqlite3 backend/src/data/database.sqlite ".backup 'backend/src/data/backup-$(date +%Y%m%d_%H%M%S).sqlite'"
+```
+
+### Restore Procedure
+```bash
+# 1. Stop backend service
+npm stop (or stop container/process)
+
+# 2. Replace database file with verified backup
+cp backend/src/data/backup-20261029.sqlite backend/src/data/database.sqlite
+
+# 3. Clean up stale shm/wal cache files
+rm -f backend/src/data/database.sqlite-shm backend/src/data/database.sqlite-wal
+
+# 4. Restart server
+npm start
+```
 
 ---
 
-## Verification & Testing Checklist
+## 6. Testing & Operational Verification
 
-- [x] Frontend builds with zero errors: `npm run build --prefix frontend`
-- [x] Linter passes with 0 errors: `npm run lint --prefix frontend`
-- [x] Security headers enabled: `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`, `x-powered-by` disabled
-- [x] Endpoints test suite passes: `node backend/test-endpoints.js`
-- [x] SPA client-side fallback works seamlessly across all routes
-- [x] Null-safe error handling and parameter protection applied across all API controllers
+Run the automated endpoint and database verification test suite:
+```bash
+cd backend
+npm test
+```
+**Test Coverage Includes**:
+- Health endpoint & SQLite WAL mode validation
+- Security headers (nosniff, SAMEORIGIN)
+- Task CRUD (Create, Read by ID, Toggle completion, Update, Delete)
+- Notifications CRUD (Create, List, Mark as Read, Mark All Read)
+- Focus session logging & authentic study hour metrics calculation
+- Timetable, routines, habits, and goals milestones endpoints
+- Rate limiting sliding-window guard and 404 JSON fallback handling
+
+---
+
+## 7. Rollback Steps
+
+If an unstable commit or configuration is pushed to production:
+1. Revert to the last known stable commit:
+   ```bash
+   git revert HEAD --no-edit
+   git push origin main
+   ```
+2. Re-run `npm run install:all && npm run build`.
+3. Verify `/api/health` returns `{"status":"healthy"}` and SQLite WAL database file is mounted.

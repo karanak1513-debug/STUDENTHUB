@@ -1,9 +1,9 @@
-import { db } from '../data/db.js';
+import { realtimeDb, queryGet, queryRun, queryAll } from '../data/sqliteDb.js';
 
 export const timetableController = {
-  getTimetable: (req, res, next) => {
+  getTimetable: async (req, res, next) => {
     try {
-      const timetable = db.get('timetable') || {};
+      const timetable = await realtimeDb.getTimetable();
       const { day } = req.query;
 
       if (day) {
@@ -27,7 +27,7 @@ export const timetableController = {
 
   addClass: async (req, res, next) => {
     try {
-      const { day, code, name, time, room, instructor, color } = req.body;
+      const { day, code, name, time, room, instructor } = req.body;
       if (!day || !code || !name || !time) {
         return res.status(400).json({
           success: false,
@@ -35,28 +35,14 @@ export const timetableController = {
         });
       }
 
-      const timetable = db.get('timetable') || {};
-      const dayList = timetable[day] ? [...timetable[day]] : [];
-
-      const nextId =
-        Object.values(timetable)
-          .flat()
-          .reduce((max, item) => Math.max(max, typeof item.id === 'number' ? item.id : 0), 0) + 1;
-
-      const newClass = {
-        id: nextId,
+      const newClass = await realtimeDb.addTimetableClass({
+        day,
         code: code.trim(),
         name: name.trim(),
         time: time.trim(),
         room: room || 'Main Hall',
         instructor: instructor || 'Staff',
-        color:
-          color ||
-          'border-l-4 border-primary bg-primary/10 text-primary dark:text-primary-fixed',
-      };
-
-      dayList.push(newClass);
-      await db.updateTimetableDay(day, dayList);
+      });
 
       res.status(201).json({
         success: true,
@@ -71,31 +57,24 @@ export const timetableController = {
   updateClass: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { day, id: _id, ...updates } = req.body;
-      const timetable = db.get('timetable') || {};
-
-      let found = false;
-      let updatedItem = null;
-
-      for (const [d, list] of Object.entries(timetable)) {
-        const index = list.findIndex((c) => String(c.id) === String(id));
-        if (index !== -1) {
-          found = true;
-          list[index] = { ...list[index], ...updates };
-          updatedItem = list[index];
-          await db.updateTimetableDay(d, list);
-          break;
-        }
-      }
-
-      if (!found) {
+      const existing = await queryGet('SELECT * FROM timetable WHERE id = ?;', [id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Class session not found' });
       }
 
+      const { day, code, name, time, room, instructor } = req.body;
+      await queryRun(
+        `UPDATE timetable SET day = COALESCE(?, day), code = COALESCE(?, code), name = COALESCE(?, name),
+         time = COALESCE(?, time), room = COALESCE(?, room), instructor = COALESCE(?, instructor)
+         WHERE id = ?;`,
+        [day, code, name, time, room, instructor, id]
+      );
+
+      const updated = await queryGet('SELECT * FROM timetable WHERE id = ?;', [id]);
       res.json({
         success: true,
         message: 'Class session updated successfully',
-        data: updatedItem,
+        data: updated,
       });
     } catch (err) {
       next(err);
@@ -105,26 +84,16 @@ export const timetableController = {
   deleteClass: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const timetable = db.get('timetable') || {};
-
-      let removed = null;
-      for (const [d, list] of Object.entries(timetable)) {
-        const index = list.findIndex((c) => String(c.id) === String(id));
-        if (index !== -1) {
-          removed = list.splice(index, 1)[0];
-          await db.updateTimetableDay(d, list);
-          break;
-        }
-      }
-
-      if (!removed) {
+      const existing = await queryGet('SELECT * FROM timetable WHERE id = ?;', [id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Class session not found' });
       }
 
+      await realtimeDb.deleteTimetableClass(id);
       res.json({
         success: true,
         message: 'Class session removed',
-        data: removed,
+        data: { id },
       });
     } catch (err) {
       next(err);

@@ -1,9 +1,9 @@
-import { db } from '../data/db.js';
+import { realtimeDb, queryRun, queryGet, queryAll } from '../data/sqliteDb.js';
 
 export const routineController = {
-  getHabits: (req, res, next) => {
+  getHabits: async (req, res, next) => {
     try {
-      const habits = db.get('habits');
+      const habits = await realtimeDb.getHabits();
       res.json({ success: true, count: habits.length, data: habits });
     } catch (err) {
       next(err);
@@ -12,22 +12,22 @@ export const routineController = {
 
   createHabit: async (req, res, next) => {
     try {
-      const { title, time, category } = req.body;
+      const { title, time, category, icon } = req.body;
       if (!title) {
         return res.status(400).json({ success: false, message: 'Habit title is required' });
       }
 
-      const newHabit = await db.insert('habits', {
-        title: title.trim(),
-        time: time || '08:00 AM',
-        category: category || 'General',
-        completed: false,
-      });
+      const resInsert = await queryRun(
+        `INSERT INTO habits (title, time, category, streak_days, completed, icon, created_at)
+         VALUES (?, ?, ?, 0, 0, ?, ?)`,
+        [title.trim(), time || '08:00 AM', category || 'General', icon || 'bolt', new Date().toISOString()]
+      );
 
+      const created = await queryGet('SELECT * FROM habits WHERE id = ?;', [resInsert.lastID]);
       res.status(201).json({
         success: true,
         message: 'Habit added successfully',
-        data: newHabit,
+        data: { ...created, completed: Boolean(created.completed) },
       });
     } catch (err) {
       next(err);
@@ -36,14 +36,10 @@ export const routineController = {
 
   toggleHabit: async (req, res, next) => {
     try {
-      const habit = db.findById('habits', req.params.id);
-      if (!habit) {
+      const updated = await realtimeDb.toggleHabit(req.params.id);
+      if (!updated) {
         return res.status(404).json({ success: false, message: 'Habit not found' });
       }
-
-      const updated = await db.update('habits', req.params.id, {
-        completed: !habit.completed,
-      });
 
       res.json({
         success: true,
@@ -57,19 +53,20 @@ export const routineController = {
 
   deleteHabit: async (req, res, next) => {
     try {
-      const removed = await db.delete('habits', req.params.id);
-      if (!removed) {
+      const existing = await queryGet('SELECT * FROM habits WHERE id = ?;', [req.params.id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Habit not found' });
       }
-      res.json({ success: true, message: 'Habit deleted', data: removed });
+      await queryRun('DELETE FROM habits WHERE id = ?;', [req.params.id]);
+      res.json({ success: true, message: 'Habit deleted', data: { id: req.params.id } });
     } catch (err) {
       next(err);
     }
   },
 
-  getTimeBlocks: (req, res, next) => {
+  getTimeBlocks: async (req, res, next) => {
     try {
-      const blocks = db.get('timeBlocks');
+      const blocks = await realtimeDb.getTimeBlocks();
       res.json({ success: true, count: blocks.length, data: blocks });
     } catch (err) {
       next(err);
@@ -78,23 +75,21 @@ export const routineController = {
 
   createTimeBlock: async (req, res, next) => {
     try {
-      const { time, title, type, color, icon } = req.body;
+      const { time, title, type, icon } = req.body;
       if (!title || !time) {
         return res.status(400).json({ success: false, message: 'Time and title are required' });
       }
 
-      const newBlock = await db.insert('timeBlocks', {
-        time: time.trim(),
-        title: title.trim(),
-        type: type || 'Study Session',
-        color: color || 'border-primary bg-primary/10 text-primary dark:text-primary-fixed',
-        icon: icon || 'schedule',
-      });
+      const resInsert = await queryRun(
+        `INSERT INTO time_blocks (title, time, type, icon) VALUES (?, ?, ?, ?)`,
+        [title.trim(), time.trim(), type || 'Study Session', icon || 'schedule']
+      );
 
+      const created = await queryGet('SELECT * FROM time_blocks WHERE id = ?;', [resInsert.lastID]);
       res.status(201).json({
         success: true,
         message: 'Time block created successfully',
-        data: newBlock,
+        data: created,
       });
     } catch (err) {
       next(err);
@@ -103,11 +98,12 @@ export const routineController = {
 
   deleteTimeBlock: async (req, res, next) => {
     try {
-      const removed = await db.delete('timeBlocks', req.params.id);
-      if (!removed) {
+      const existing = await queryGet('SELECT * FROM time_blocks WHERE id = ?;', [req.params.id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Time block not found' });
       }
-      res.json({ success: true, message: 'Time block deleted', data: removed });
+      await queryRun('DELETE FROM time_blocks WHERE id = ?;', [req.params.id]);
+      res.json({ success: true, message: 'Time block deleted', data: { id: req.params.id } });
     } catch (err) {
       next(err);
     }
@@ -115,11 +111,11 @@ export const routineController = {
 
   logFocusSession: async (req, res, next) => {
     try {
-      const { durationMinutes, subject } = req.body;
-      const session = await db.insert('focusSessions', {
+      const { durationMinutes, subject, mode } = req.body;
+      const session = await realtimeDb.logFocusSession({
         durationMinutes: Number(durationMinutes) || 25,
         subject: subject || 'General Focus',
-        completedAt: new Date().toISOString(),
+        mode: mode || 'focus',
       });
 
       res.status(201).json({
@@ -132,9 +128,9 @@ export const routineController = {
     }
   },
 
-  getFocusSessions: (req, res, next) => {
+  getFocusSessions: async (req, res, next) => {
     try {
-      const sessions = db.get('focusSessions');
+      const sessions = await realtimeDb.getFocusSessions();
       res.json({ success: true, count: sessions.length, data: sessions });
     } catch (err) {
       next(err);

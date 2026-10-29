@@ -4,8 +4,46 @@ import { api } from '../services/api';
 import { triggerConfetti, triggerMiniConfetti, playChime } from '../utils/celebration';
 
 export default function RoutineTrackerPage() {
-  const [timerSeconds, setTimerSeconds] = useState(45 * 60);
-  const [timerRunning, setTimerRunning] = useState(false);
+  const [timerRunning, setTimerRunning] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('scholara_routine_timer'));
+      if (saved?.running && saved?.lastTimestamp && saved?.remainingSeconds) {
+        const elapsed = Math.floor((Date.now() - saved.lastTimestamp) / 1000);
+        return saved.remainingSeconds - elapsed > 0;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  });
+
+  const [timerSeconds, setTimerSeconds] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('scholara_routine_timer'));
+      if (saved?.remainingSeconds !== undefined && saved?.lastTimestamp) {
+        if (saved.running) {
+          const elapsed = Math.floor((Date.now() - saved.lastTimestamp) / 1000);
+          return Math.max(0, saved.remainingSeconds - elapsed);
+        }
+        return saved.remainingSeconds;
+      }
+      return 45 * 60;
+    } catch {
+      return 45 * 60;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      'scholara_routine_timer',
+      JSON.stringify({
+        running: timerRunning,
+        remainingSeconds: timerSeconds,
+        lastTimestamp: Date.now(),
+      })
+    );
+  }, [timerRunning, timerSeconds]);
+
   const [habits, setHabits] = useState([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [newHabitTitle, setNewHabitTitle] = useState('');

@@ -31,7 +31,11 @@ export function AppProvider({ children }) {
   const [tasksError, setTasksError] = useState(null);
   const [realtimeStatus, setRealtimeStatus] = useState('connected'); // 'connected' | 'reconnecting' | 'disconnected'
 
-  // Profile State (Name, Program, Avatar, University, Target GPA, Goal Hours, etc.)
+  // Notifications State (Persisted via SQLite)
+  const [notifications, setNotifications] = useState([]);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
+
+  // Profile State
   const [profile, setProfile] = useState({
     name: 'Sarah Jenkins',
     program: 'BBA 3rd Semester',
@@ -43,34 +47,6 @@ export function AppProvider({ children }) {
     streakDays: 14,
     dailyGoalHours: 5.0,
   });
-
-  // Notifications
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'n1',
-      title: 'CS501 Lecture Starts Soon',
-      desc: 'Room 402, Tech Hub in 35 mins',
-      type: 'blue',
-      time: '10 mins ago',
-      read: false,
-    },
-    {
-      id: 'n2',
-      title: 'Urgent: Macroeconomics Problem Set',
-      desc: 'Due today by 5:00 PM',
-      type: 'red',
-      time: '1 hour ago',
-      read: false,
-    },
-    {
-      id: 'n3',
-      title: 'Focus Streak Milestone 🔥',
-      desc: '14 consecutive days of academic velocity!',
-      type: 'red',
-      time: 'Yesterday',
-      read: true,
-    },
-  ]);
 
   // Fetch profile from backend
   const fetchProfile = useCallback(async () => {
@@ -127,10 +103,24 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  // Fetch notifications from SQLite backend
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await api.notifications.getAll();
+      if (res && res.data) {
+        setNotifications(res.data);
+        setUnreadNotificationsCount(res.data.filter((n) => !n.read).length);
+      }
+    } catch (err) {
+      console.warn('Could not fetch notifications from backend:', err.message);
+    }
+  }, []);
+
   useEffect(() => {
     fetchTasks();
     fetchProfile();
-  }, [fetchTasks, fetchProfile]);
+    fetchNotifications();
+  }, [fetchTasks, fetchProfile, fetchNotifications]);
 
   // Real-time synchronization layer with SQLite backend
   useEffect(() => {
@@ -172,6 +162,32 @@ export function AppProvider({ children }) {
         case 'PROFILE_UPDATED':
           if (data) {
             setProfile((prev) => ({ ...prev, ...data }));
+          }
+          break;
+
+        case 'NOTIFICATION_CREATED':
+          if (data && data.id) {
+            setNotifications((prev) => [data, ...prev.filter((n) => n.id !== data.id)]);
+            setUnreadNotificationsCount((prev) => prev + 1);
+          }
+          break;
+
+        case 'NOTIFICATION_UPDATED':
+          if (data && data.id) {
+            setNotifications((prev) =>
+              prev.map((n) => (n.id === data.id ? { ...n, ...data } : n))
+            );
+          }
+          break;
+
+        case 'NOTIFICATIONS_MARKED_ALL_READ':
+          setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+          setUnreadNotificationsCount(0);
+          break;
+
+        case 'NOTIFICATION_DELETED':
+          if (data && data.id) {
+            setNotifications((prev) => prev.filter((n) => n.id !== data.id));
           }
           break;
 
@@ -248,6 +264,23 @@ export function AppProvider({ children }) {
     return optimisticTask;
   };
 
+  const updateTask = async (taskId, updates) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === taskId ? { ...task, ...updates } : task))
+    );
+    try {
+      const res = await api.tasks.update(taskId, updates);
+      if (res && res.data) {
+        setTasks((prev) =>
+          prev.map((task) => (task.id === taskId ? res.data : task))
+        );
+        return res.data;
+      }
+    } catch (err) {
+      console.error('Failed to update task on backend:', err);
+    }
+  };
+
   const deleteTask = async (taskId) => {
     setTasks((prev) => prev.filter((t) => t.id !== taskId));
     try {
@@ -257,12 +290,46 @@ export function AppProvider({ children }) {
     }
   };
 
-  const markAllNotificationsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const markNotificationRead = async (id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
+    setUnreadNotificationsCount((prev) => Math.max(0, prev - 1));
+    try {
+      await api.notifications.markRead(id);
+    } catch (err) {
+      console.error('Failed to mark notification read on backend:', err);
+    }
   };
 
-  const dismissNotification = (id) => {
+  const markAllNotificationsRead = async () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setUnreadNotificationsCount(0);
+    try {
+      await api.notifications.markAllRead();
+    } catch (err) {
+      console.error('Failed to mark all notifications read on backend:', err);
+    }
+  };
+
+  const dismissNotification = async (id) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
+    try {
+      await api.notifications.delete(id);
+    } catch (err) {
+      console.error('Failed to delete notification on backend:', err);
+    }
+  };
+
+  const requestBrowserNotificationPermission = async () => {
+    if (!('Notification' in window)) return 'unsupported';
+    try {
+      const permission = await Notification.requestPermission();
+      return permission;
+    } catch (e) {
+      console.warn('Could not request notification permission:', e);
+      return 'denied';
+    }
   };
 
   return (
@@ -294,8 +361,11 @@ export function AppProvider({ children }) {
         isExportDigestOpen,
         setIsExportDigestOpen,
         notifications,
+        unreadNotificationsCount,
+        markNotificationRead,
         markAllNotificationsRead,
         dismissNotification,
+        requestBrowserNotificationPermission,
         profile,
         updateProfile,
         viewMode,
@@ -307,6 +377,7 @@ export function AppProvider({ children }) {
         refreshTasks: fetchTasks,
         toggleTaskCompleted,
         addTask,
+        updateTask,
         deleteTask,
       }}
     >

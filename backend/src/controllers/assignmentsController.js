@@ -1,10 +1,10 @@
-import { db } from '../data/db.js';
+import { realtimeDb, queryGet, queryRun } from '../data/sqliteDb.js';
 
 export const assignmentsController = {
-  getAssignments: (req, res, next) => {
+  getAssignments: async (req, res, next) => {
     try {
       const { status, course, search } = req.query;
-      let items = db.get('assignments');
+      let items = await realtimeDb.getAssignments();
 
       if (status) {
         items = items.filter((a) => a.status?.toLowerCase() === status.toLowerCase());
@@ -32,13 +32,13 @@ export const assignmentsController = {
     }
   },
 
-  getAssignmentById: (req, res, next) => {
+  getAssignmentById: async (req, res, next) => {
     try {
-      const assignment = db.findById('assignments', req.params.id);
+      const assignment = await queryGet('SELECT * FROM assignments WHERE id = ?;', [req.params.id]);
       if (!assignment) {
         return res.status(404).json({ success: false, message: 'Assignment not found' });
       }
-      res.json({ success: true, data: assignment });
+      res.json({ success: true, data: { ...assignment, urgent: Boolean(assignment.urgent) } });
     } catch (err) {
       next(err);
     }
@@ -46,7 +46,7 @@ export const assignmentsController = {
 
   createAssignment: async (req, res, next) => {
     try {
-      const { title, course, instructor, due, dueHours, urgent, weight, type, description } = req.body;
+      const { title, course, instructor, due, weight, progress, status, urgent } = req.body;
       if (!title || !course) {
         return res.status(400).json({
           success: false,
@@ -54,18 +54,15 @@ export const assignmentsController = {
         });
       }
 
-      const newAssignment = await db.insert('assignments', {
+      const newAssignment = await realtimeDb.createAssignment({
         title: title.trim(),
         course: course.trim(),
-        instructor: instructor || 'Staff',
+        instructor: instructor || 'Faculty Staff',
         due: due || 'Upcoming',
-        dueHours: typeof dueHours === 'number' ? dueHours : 72,
-        urgent: Boolean(urgent),
-        progress: 0,
-        status: 'pending',
         weight: weight || '15%',
-        type: type || 'Individual',
-        description: description || '',
+        progress: Number(progress) || 0,
+        status: status || 'pending',
+        urgent: Boolean(urgent),
       });
 
       res.status(201).json({
@@ -80,15 +77,34 @@ export const assignmentsController = {
 
   updateAssignment: async (req, res, next) => {
     try {
-      const { id: _id, ...safeUpdates } = req.body;
-      const updated = await db.update('assignments', req.params.id, safeUpdates);
-      if (!updated) {
+      const existing = await queryGet('SELECT * FROM assignments WHERE id = ?;', [req.params.id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Assignment not found' });
       }
+
+      const { title, course, instructor, due, weight, progress, status, urgent } = req.body;
+      await queryRun(
+        `UPDATE assignments SET title = COALESCE(?, title), course = COALESCE(?, course), instructor = COALESCE(?, instructor),
+         due = COALESCE(?, due), weight = COALESCE(?, weight), progress = COALESCE(?, progress),
+         status = COALESCE(?, status), urgent = COALESCE(?, urgent) WHERE id = ?;`,
+        [
+          title,
+          course,
+          instructor,
+          due,
+          weight,
+          progress !== undefined ? Number(progress) : null,
+          status,
+          urgent !== undefined ? (urgent ? 1 : 0) : null,
+          req.params.id,
+        ]
+      );
+
+      const updated = await queryGet('SELECT * FROM assignments WHERE id = ?;', [req.params.id]);
       res.json({
         success: true,
         message: 'Assignment updated successfully',
-        data: updated,
+        data: { ...updated, urgent: Boolean(updated.urgent) },
       });
     } catch (err) {
       next(err);
@@ -97,17 +113,10 @@ export const assignmentsController = {
 
   submitAssignment: async (req, res, next) => {
     try {
-      const item = db.findById('assignments', req.params.id);
-      if (!item) {
+      const updated = await realtimeDb.submitAssignment(req.params.id, req.body.notes);
+      if (!updated) {
         return res.status(404).json({ success: false, message: 'Assignment not found' });
       }
-
-      const updated = await db.update('assignments', req.params.id, {
-        status: 'submitted',
-        progress: 100,
-        submittedAt: new Date().toISOString(),
-        submissionNotes: req.body.notes || 'Submitted via Scholara Student Hub',
-      });
 
       res.json({
         success: true,
@@ -121,14 +130,15 @@ export const assignmentsController = {
 
   deleteAssignment: async (req, res, next) => {
     try {
-      const removed = await db.delete('assignments', req.params.id);
-      if (!removed) {
+      const existing = await queryGet('SELECT * FROM assignments WHERE id = ?;', [req.params.id]);
+      if (!existing) {
         return res.status(404).json({ success: false, message: 'Assignment not found' });
       }
+      await queryRun('DELETE FROM assignments WHERE id = ?;', [req.params.id]);
       res.json({
         success: true,
         message: 'Assignment removed successfully',
-        data: removed,
+        data: { id: req.params.id },
       });
     } catch (err) {
       next(err);

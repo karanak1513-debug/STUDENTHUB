@@ -22,9 +22,58 @@ export default function DashboardPage() {
   } = useApp();
 
   const [statsData, setStatsData] = useState(null);
-  const [pomodoroActive, setPomodoroActive] = useState(false);
-  const [pomodoroMode, setPomodoroMode] = useState('focus'); // 'focus' (25m), 'shortBreak' (5m), 'longFocus' (50m)
-  const [pomodoroTime, setPomodoroTime] = useState(25 * 60);
+
+  // Pomodoro duration mapping
+  const getModeDuration = (mode) => {
+    switch (mode) {
+      case 'shortBreak':
+        return 5 * 60;
+      case 'longFocus':
+        return 50 * 60;
+      default:
+        return 25 * 60;
+    }
+  };
+
+  // Persistent Pomodoro timer state across browser refreshes
+  const [pomodoroMode, setPomodoroMode] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('scholara_pomodoro_state'));
+      return saved?.mode || 'focus';
+    } catch {
+      return 'focus';
+    }
+  });
+
+  const [pomodoroActive, setPomodoroActive] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('scholara_pomodoro_state'));
+      if (saved?.active && saved?.lastTimestamp && saved?.remainingSeconds) {
+        const elapsed = Math.floor((Date.now() - saved.lastTimestamp) / 1000);
+        return saved.remainingSeconds - elapsed > 0;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  });
+
+  const [pomodoroTime, setPomodoroTime] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('scholara_pomodoro_state'));
+      if (saved?.remainingSeconds !== undefined && saved?.lastTimestamp) {
+        if (saved.active) {
+          const elapsed = Math.floor((Date.now() - saved.lastTimestamp) / 1000);
+          return Math.max(0, saved.remainingSeconds - elapsed);
+        }
+        return saved.remainingSeconds;
+      }
+      return 25 * 60;
+    } catch {
+      return 25 * 60;
+    }
+  });
+
   const [taskFilter, setTaskFilter] = useState('all'); // 'all', 'high', 'active', 'done'
   const [quickTaskTitle, setQuickTaskTitle] = useState('');
   const [quickTaskSubject, setQuickTaskSubject] = useState('CS501');
@@ -36,6 +85,20 @@ export default function DashboardPage() {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Save Pomodoro timer snapshot to localStorage on state changes
+  useEffect(() => {
+    localStorage.setItem(
+      'scholara_pomodoro_state',
+      JSON.stringify({
+        active: pomodoroActive,
+        mode: pomodoroMode,
+        remainingSeconds: pomodoroTime,
+        lastTimestamp: Date.now(),
+        targetDuration: getModeDuration(pomodoroMode),
+      })
+    );
+  }, [pomodoroActive, pomodoroMode, pomodoroTime]);
 
   // Fetch live dashboard analytics from backend
   useEffect(() => {
@@ -56,18 +119,6 @@ export default function DashboardPage() {
     };
   }, [tasks]);
 
-  // Pomodoro duration mapping
-  const getModeDuration = (mode) => {
-    switch (mode) {
-      case 'shortBreak':
-        return 5 * 60;
-      case 'longFocus':
-        return 50 * 60;
-      default:
-        return 25 * 60;
-    }
-  };
-
   const handleModeChange = (mode) => {
     setPomodoroMode(mode);
     setPomodoroActive(false);
@@ -79,7 +130,7 @@ export default function DashboardPage() {
     let timer = null;
     if (pomodoroActive && pomodoroTime > 0) {
       timer = setInterval(() => {
-        setPomodoroTime((prev) => prev - 1);
+        setPomodoroTime((prev) => Math.max(0, prev - 1));
       }, 1000);
     } else if (pomodoroTime === 0 && pomodoroActive) {
       setPomodoroActive(false);
@@ -89,6 +140,7 @@ export default function DashboardPage() {
         .logFocusSession({
           durationMinutes: Math.round(getModeDuration(pomodoroMode) / 60),
           subject: `${pomodoroMode.toUpperCase()} Session`,
+          mode: pomodoroMode,
         })
         .catch(console.error);
       setPomodoroTime(getModeDuration(pomodoroMode));
@@ -391,8 +443,8 @@ export default function DashboardPage() {
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               {streakDays} Days
             </h3>
-            <span className="text-[9px] font-black font-mono px-1.5 py-0.5 rounded bg-red-600 text-white">
-              TOP 5%
+            <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+              Verified
             </span>
           </div>
           <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2 truncate">

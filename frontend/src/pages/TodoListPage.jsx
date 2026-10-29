@@ -4,12 +4,15 @@ import { useApp } from '../context/AppContext';
 import { triggerMiniConfetti, playChime } from '../utils/celebration';
 
 export default function TodoListPage() {
-  const { tasks, toggleTaskCompleted, addTask, deleteTask } = useApp();
+  const { tasks, toggleTaskCompleted, addTask, updateTask, deleteTask } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [quickInput, setQuickInput] = useState('');
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'active', 'high', 'completed'
   const [viewMode, setViewMode] = useState('list'); // 'list', 'board'
   const [selectedSubject, setSelectedSubject] = useState('Economics');
+
+  // Edit / Reschedule state
+  const [editingTask, setEditingTask] = useState(null);
 
   const suggestions = [
     { label: 'Read Chapter 4', subject: 'Economics' },
@@ -42,6 +45,20 @@ export default function TodoListPage() {
     triggerMiniConfetti(x, y);
     playChime('success');
     toggleTaskCompleted(taskId);
+  };
+
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!editingTask || !editingTask.title.trim()) return;
+    updateTask(editingTask.id, {
+      title: editingTask.title.trim(),
+      subject: editingTask.subject,
+      due: editingTask.due,
+      priority: editingTask.priority,
+      tag: editingTask.tag,
+    });
+    setEditingTask(null);
+    playChime('success');
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -128,6 +145,8 @@ export default function TodoListPage() {
               <option value="Statistics">Statistics</option>
               <option value="Marketing">Marketing</option>
               <option value="Accounting">Accounting</option>
+              <option value="CS501">CS501</option>
+              <option value="ML405">ML405</option>
               <option value="Personal">Personal</option>
             </select>
 
@@ -136,7 +155,7 @@ export default function TodoListPage() {
               whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={!quickInput.trim()}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 disabled:opacity-40 text-white font-black text-xs shadow-md shadow-blue-600/25 transition-all whitespace-nowrap"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-black text-xs shadow-md shadow-blue-600/25 transition-all whitespace-nowrap"
             >
               Add Task
             </motion.button>
@@ -265,6 +284,7 @@ export default function TodoListPage() {
                       <button
                         onClick={(e) => handleToggle(task.id, e)}
                         className="mt-0.5 w-5 h-5 rounded-lg border-2 border-slate-300 dark:border-white/20 hover:border-blue-600 flex items-center justify-center transition-colors text-blue-600 active:scale-90"
+                        title="Mark as completed"
                       >
                         <span className="material-symbols-outlined text-[15px] opacity-0 group-hover:opacity-60 transition-opacity">
                           check
@@ -276,7 +296,7 @@ export default function TodoListPage() {
                           <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
                             {task.title}
                           </h4>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
                             <span
                               className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
                                 task.priority === 'high'
@@ -290,6 +310,13 @@ export default function TodoListPage() {
                               {task.tag || 'Sprint'}
                             </span>
                             <button
+                              onClick={() => setEditingTask({ ...task })}
+                              className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-blue-600 rounded transition-all"
+                              title="Edit / Reschedule Task"
+                            >
+                              <span className="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
+                            <button
                               onClick={() => deleteTask(task.id)}
                               className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 rounded transition-all"
                               title="Delete task"
@@ -300,13 +327,13 @@ export default function TodoListPage() {
                         </div>
 
                         <div className="flex items-center gap-4 mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                          <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
+                          <span className="flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400">
                             <span className="material-symbols-outlined text-[14px]">flag</span>
                             {task.due}
                           </span>
                           <span className="flex items-center gap-1 font-medium">
                             <span className="material-symbols-outlined text-[14px]">timer</span>
-                            45m focus target
+                            25m sprint target
                           </span>
                         </div>
                       </div>
@@ -338,6 +365,7 @@ export default function TodoListPage() {
                     <button
                       onClick={(e) => handleToggle(task.id, e)}
                       className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center transition-colors"
+                      title="Unmark task"
                     >
                       <span className="material-symbols-outlined text-[14px] font-bold">check</span>
                     </button>
@@ -381,14 +409,23 @@ export default function TodoListPage() {
                     </span>
                     <div className="flex items-center gap-1">
                       <button
+                        onClick={() => setEditingTask({ ...task })}
+                        className="text-slate-400 hover:text-blue-600 transition-colors p-0.5"
+                        title="Edit task"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">edit</span>
+                      </button>
+                      <button
                         onClick={(e) => handleToggle(task.id, e)}
-                        className="text-slate-400 hover:text-blue-600 transition-colors"
+                        className="text-slate-400 hover:text-blue-600 transition-colors p-0.5"
+                        title="Complete task"
                       >
                         <span className="material-symbols-outlined text-[16px]">check_circle</span>
                       </button>
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-colors"
+                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-colors p-0.5"
+                        title="Delete task"
                       >
                         <span className="material-symbols-outlined text-[16px]">delete</span>
                       </button>
@@ -397,7 +434,7 @@ export default function TodoListPage() {
                   <p className="text-xs font-bold text-slate-900 dark:text-white">
                     {task.title}
                   </p>
-                  <span className="text-[10px] text-red-600 dark:text-red-400 font-bold flex items-center gap-1">
+                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1">
                     <span className="material-symbols-outlined text-[13px]">event</span>
                     {task.due}
                   </span>
@@ -410,21 +447,25 @@ export default function TodoListPage() {
           <div className="glass-card rounded-3xl p-5 space-y-3">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-white/10">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-red-600" />
-                Active Sprints (1)
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                In Progress ({todayTasks.slice(0, 2).length})
               </h4>
             </div>
-            <div className="bg-white/70 dark:bg-white/[0.04] p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs space-y-2">
-              <span className="text-[10px] font-black bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-md">
-                Management
-              </span>
-              <p className="text-xs font-bold text-slate-900 dark:text-white">
-                Team Presentation Slide Deck
-              </p>
-              <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
-                <span className="material-symbols-outlined text-[13px]">group</span>
-                Collaborative peer review
-              </span>
+            <div className="space-y-2.5">
+              {todayTasks.slice(0, 2).map((task) => (
+                <div key={task.id} className="bg-white/70 dark:bg-white/[0.04] p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs space-y-2">
+                  <span className="text-[10px] font-black bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-md">
+                    {task.subject}
+                  </span>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">
+                    {task.title}
+                  </p>
+                  <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[13px]">timer</span>
+                    Active Focus Target
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -432,7 +473,7 @@ export default function TodoListPage() {
           <div className="glass-card rounded-3xl p-5 space-y-3">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-white/10">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                <span className="w-2 h-2 rounded-full bg-emerald-600" />
                 Completed ({completedTasks.length})
               </h4>
             </div>
@@ -451,12 +492,136 @@ export default function TodoListPage() {
                   <button
                     onClick={() => deleteTask(task.id)}
                     className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500"
+                    title="Delete task"
                   >
                     <span className="material-symbols-outlined text-[16px]">delete</span>
                   </button>
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit / Reschedule Task Modal */}
+      {editingTask && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in"
+          onClick={() => setEditingTask(null)}
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-[#121217] rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-white/10 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-3">
+              <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <span className="material-symbols-outlined text-blue-600">edit_note</span>
+                Edit / Reschedule Task
+              </h3>
+              <button
+                onClick={() => setEditingTask(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Task Title
+                </label>
+                <input
+                  type="text"
+                  value={editingTask.title}
+                  onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                    Subject / Course
+                  </label>
+                  <select
+                    value={editingTask.subject}
+                    onChange={(e) => setEditingTask({ ...editingTask, subject: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                  >
+                    <option value="Economics">Economics</option>
+                    <option value="Management">Management</option>
+                    <option value="Statistics">Statistics</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="CS501">CS501</option>
+                    <option value="ML405">ML405</option>
+                    <option value="Personal">Personal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                    Priority
+                  </label>
+                  <select
+                    value={editingTask.priority}
+                    onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                  >
+                    <option value="high">High Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Due Schedule
+                </label>
+                <div className="flex gap-2 mb-2">
+                  {['Today, 8:00 PM', 'Tomorrow, 5:00 PM', 'This Friday', 'Next Week'].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setEditingTask({ ...editingTask, due: preset })}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-colors ${
+                        editingTask.due === preset
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10'
+                      }`}
+                    >
+                      {preset.split(',')[0]}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  value={editingTask.due}
+                  onChange={(e) => setEditingTask({ ...editingTask, due: e.target.value })}
+                  placeholder="e.g. Today, 10:00 PM or Nov 12"
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setEditingTask(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md shadow-blue-600/30 transition-all"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

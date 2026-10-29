@@ -211,8 +211,8 @@ export default function Sidebar() {
             <span className="text-sm">🔥</span>
             <span>{profile.streakDays || 14}-Day Streak</span>
           </div>
-          <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-md bg-red-600 text-white shadow-xs">
-            TOP 5%
+          <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-blue-600/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+            Active
           </span>
         </div>
       </div>

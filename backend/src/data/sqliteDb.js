@@ -52,6 +52,7 @@ export function initSqlite() {
       // Enable WAL mode for high performance concurrency
       db.run('PRAGMA journal_mode = WAL;');
       db.run('PRAGMA synchronous = NORMAL;');
+      db.run('PRAGMA foreign_keys = ON;');
 
       try {
         await createSchema();
@@ -181,6 +182,35 @@ async function createSchema() {
       daily_goal_hours REAL
     );
   `);
+
+  await queryRun(`
+    CREATE TABLE IF NOT EXISTS focus_sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      subject TEXT,
+      duration_minutes INTEGER NOT NULL,
+      completed_at TEXT NOT NULL,
+      mode TEXT DEFAULT 'focus'
+    );
+  `);
+
+  await queryRun(`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      message TEXT,
+      type TEXT DEFAULT 'blue',
+      category TEXT DEFAULT 'academic',
+      due_date TEXT,
+      read INTEGER DEFAULT 0,
+      created_at TEXT NOT NULL
+    );
+  `);
+
+  // Optimized query pattern indexes
+  await queryRun(`CREATE INDEX IF NOT EXISTS idx_tasks_due ON tasks(due);`);
+  await queryRun(`CREATE INDEX IF NOT EXISTS idx_tasks_completed ON tasks(completed);`);
+  await queryRun(`CREATE INDEX IF NOT EXISTS idx_focus_completed ON focus_sessions(completed_at);`);
+  await queryRun(`CREATE INDEX IF NOT EXISTS idx_notif_read ON notifications(read);`);
 }
 
 async function seedIfEmpty() {
@@ -268,6 +298,59 @@ async function seedIfEmpty() {
         p.dailyGoalHours || 5.0,
       ]
     );
+
+    // Seed Notifications
+    const notifCount = await queryGet('SELECT COUNT(*) as cnt FROM notifications;');
+    if (!notifCount || notifCount.cnt === 0) {
+      const defaultNotifs = [
+        {
+          title: 'CS501 Lecture Starts Soon',
+          message: 'Room 402, Tech Hub in 35 mins',
+          type: 'blue',
+          category: 'class',
+          read: 0,
+          created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+        },
+        {
+          title: 'Urgent: Macroeconomics Problem Set',
+          message: 'Due today by 5:00 PM',
+          type: 'red',
+          category: 'deadline',
+          read: 0,
+          created_at: new Date(Date.now() - 60 * 60000).toISOString(),
+        },
+        {
+          title: 'Focus Streak Active 🔥',
+          message: '14 consecutive days of academic velocity verified!',
+          type: 'green',
+          category: 'achievement',
+          read: 1,
+          created_at: new Date(Date.now() - 86400000).toISOString(),
+        },
+      ];
+      for (const n of defaultNotifs) {
+        await queryRun(
+          `INSERT INTO notifications (title, message, type, category, read, created_at)
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [n.title, n.message, n.type, n.category, n.read, n.created_at]
+        );
+      }
+    }
+
+    // Seed Initial Focus Session Record
+    const focusCount = await queryGet('SELECT COUNT(*) as cnt FROM focus_sessions;');
+    if (!focusCount || focusCount.cnt === 0) {
+      await queryRun(
+        `INSERT INTO focus_sessions (subject, duration_minutes, completed_at, mode)
+         VALUES (?, ?, ?, ?)`,
+        ['CS501 Algorithm Practice', 50, new Date(Date.now() - 3600000 * 2).toISOString(), 'longFocus']
+      );
+      await queryRun(
+        `INSERT INTO focus_sessions (subject, duration_minutes, completed_at, mode)
+         VALUES (?, ?, ?, ?)`,
+        ['ML405 Reading Sprint', 25, new Date(Date.now() - 3600000 * 4).toISOString(), 'focus']
+      );
+    }
   }
 }
 
@@ -496,5 +579,69 @@ export const realtimeDb = {
     );
     broadcast('PROFILE_UPDATED', updated);
     return updated;
+  },
+
+  async getFocusSessions() {
+    return queryAll('SELECT * FROM focus_sessions ORDER BY id DESC LIMIT 100;');
+  },
+
+  async logFocusSession({ subject, durationMinutes, mode }) {
+    const mins = Number(durationMinutes) || 25;
+    const res = await queryRun(
+      `INSERT INTO focus_sessions (subject, duration_minutes, completed_at, mode)
+       VALUES (?, ?, ?, ?)`,
+      [subject || 'Focus Sprint', mins, new Date().toISOString(), mode || 'focus']
+    );
+    const session = await queryGet('SELECT * FROM focus_sessions WHERE id = ?;', [res.lastID]);
+    broadcast('FOCUS_SESSION_LOGGED', session);
+    return session;
+  },
+
+  async getNotifications() {
+    const rows = await queryAll('SELECT * FROM notifications ORDER BY id DESC LIMIT 100;');
+    return rows.map((n) => ({
+      ...n,
+      read: Boolean(n.read),
+    }));
+  },
+
+  async markNotificationRead(id) {
+    await queryRun('UPDATE notifications SET read = 1 WHERE id = ?;', [id]);
+    const updated = await queryGet('SELECT * FROM notifications WHERE id = ?;', [id]);
+    if (!updated) return null;
+    const formatted = { ...updated, read: Boolean(updated.read) };
+    broadcast('NOTIFICATION_UPDATED', formatted);
+    return formatted;
+  },
+
+  async markAllNotificationsRead() {
+    await queryRun('UPDATE notifications SET read = 1 WHERE read = 0;');
+    broadcast('NOTIFICATIONS_MARKED_ALL_READ', { timestamp: new Date().toISOString() });
+    return true;
+  },
+
+  async createNotification(item) {
+    const res = await queryRun(
+      `INSERT INTO notifications (title, message, type, category, due_date, read, created_at)
+       VALUES (?, ?, ?, ?, ?, 0, ?)`,
+      [
+        item.title,
+        item.message || item.desc || '',
+        item.type || 'blue',
+        item.category || 'general',
+        item.due_date || item.dueDate || null,
+        new Date().toISOString(),
+      ]
+    );
+    const created = await queryGet('SELECT * FROM notifications WHERE id = ?;', [res.lastID]);
+    const formatted = { ...created, read: Boolean(created.read) };
+    broadcast('NOTIFICATION_CREATED', formatted);
+    return formatted;
+  },
+
+  async deleteNotification(id) {
+    await queryRun('DELETE FROM notifications WHERE id = ?;', [id]);
+    broadcast('NOTIFICATION_DELETED', { id: Number(id) });
+    return true;
   },
 };

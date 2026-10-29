@@ -55,6 +55,36 @@ if (config.nodeEnv !== 'test') {
   app.use(morgan(config.nodeEnv === 'production' ? 'combined' : 'dev'));
 }
 
+// Rate limiting middleware (Sliding-window in-memory guard)
+const requestCounts = new Map();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 600;
+
+app.use('/api', (req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const record = requestCounts.get(ip) || { count: 0, resetTime: now + RATE_LIMIT_WINDOW_MS };
+
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + RATE_LIMIT_WINDOW_MS;
+  } else {
+    record.count++;
+  }
+
+  requestCounts.set(ip, record);
+
+  if (record.count > MAX_REQUESTS_PER_WINDOW) {
+    return res.status(429).json({
+      success: false,
+      message: 'Too many requests. Please slow down and try again shortly.',
+      retryAfterSeconds: Math.ceil((record.resetTime - now) / 1000),
+    });
+  }
+
+  next();
+});
+
 // Mount API routes
 app.use('/api', apiRoutes);
 

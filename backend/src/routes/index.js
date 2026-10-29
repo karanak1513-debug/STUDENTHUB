@@ -5,6 +5,7 @@ import routineRoutes from './routineRoutes.js';
 import timetableRoutes from './timetableRoutes.js';
 import goalsRoutes from './goalsRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
+import notificationsRoutes from './notificationsRoutes.js';
 import { sseHandler } from '../realtime/realtimeServer.js';
 import { SQLITE_FILE } from '../data/sqliteDb.js';
 
@@ -40,5 +41,6 @@ router.use('/routines', routineRoutes);
 router.use('/timetable', timetableRoutes);
 router.use('/goals', goalsRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/notifications', notificationsRoutes);
 
 export default router;

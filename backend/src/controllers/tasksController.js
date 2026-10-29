@@ -1,10 +1,10 @@
-import { db } from '../data/db.js';
+import { realtimeDb, queryGet } from '../data/sqliteDb.js';
 
 export const tasksController = {
-  getTasks: (req, res, next) => {
+  getTasks: async (req, res, next) => {
     try {
       const { priority, completed, search, tag } = req.query;
-      let tasks = db.get('tasks');
+      let tasks = await realtimeDb.getTasks();
 
       if (priority) {
         tasks = tasks.filter((t) => t.priority?.toLowerCase() === priority.toLowerCase());
@@ -36,13 +36,13 @@ export const tasksController = {
     }
   },
 
-  getTaskById: (req, res, next) => {
+  getTaskById: async (req, res, next) => {
     try {
-      const task = db.findById('tasks', req.params.id);
+      const task = await queryGet('SELECT * FROM tasks WHERE id = ?;', [req.params.id]);
       if (!task) {
         return res.status(404).json({ success: false, message: 'Task not found' });
       }
-      res.json({ success: true, data: task });
+      res.json({ success: true, data: { ...task, completed: Boolean(task.completed) } });
     } catch (err) {
       next(err);
     }
@@ -55,7 +55,7 @@ export const tasksController = {
         return res.status(400).json({ success: false, message: 'Task title is required' });
       }
 
-      const newTask = await db.insert('tasks', {
+      const newTask = await realtimeDb.createTask({
         title: title.trim(),
         subject: subject || 'General',
         due: due || 'Today',
@@ -77,7 +77,7 @@ export const tasksController = {
   updateTask: async (req, res, next) => {
     try {
       const { id: _id, ...safeUpdates } = req.body;
-      const updated = await db.update('tasks', req.params.id, safeUpdates);
+      const updated = await realtimeDb.updateTask(req.params.id, safeUpdates);
       if (!updated) {
         return res.status(404).json({ success: false, message: 'Task not found' });
       }
@@ -93,13 +93,14 @@ export const tasksController = {
 
   toggleTask: async (req, res, next) => {
     try {
-      const task = db.findById('tasks', req.params.id);
+      const task = await queryGet('SELECT * FROM tasks WHERE id = ?;', [req.params.id]);
       if (!task) {
         return res.status(404).json({ success: false, message: 'Task not found' });
       }
 
-      const updated = await db.update('tasks', req.params.id, {
-        completed: !task.completed,
+      const nextCompleted = !Boolean(task.completed);
+      const updated = await realtimeDb.updateTask(req.params.id, {
+        completed: nextCompleted,
       });
 
       res.json({
@@ -114,14 +115,14 @@ export const tasksController = {
 
   deleteTask: async (req, res, next) => {
     try {
-      const removed = await db.delete('tasks', req.params.id);
+      const removed = await realtimeDb.deleteTask(req.params.id);
       if (!removed) {
         return res.status(404).json({ success: false, message: 'Task not found' });
       }
       res.json({
         success: true,
         message: 'Task deleted successfully',
-        data: removed,
+        data: { id: req.params.id },
       });
     } catch (err) {
       next(err);

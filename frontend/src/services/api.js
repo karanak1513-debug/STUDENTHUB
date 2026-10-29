@@ -179,4 +179,26 @@ export const api = {
         body: JSON.stringify(data),
       }),
   },
+
+  // Notifications
+  notifications: {
+    getAll: () => request('/notifications'),
+    create: (data) =>
+      request('/notifications', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    markRead: (id) =>
+      request(`/notifications/${id}/read`, {
+        method: 'PATCH',
+      }),
+    markAllRead: () =>
+      request('/notifications/mark-all-read', {
+        method: 'POST',
+      }),
+    delete: (id) =>
+      request(`/notifications/${id}`, {
+        method: 'DELETE',
+      }),
+  },
 };
