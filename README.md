@@ -31,6 +31,7 @@
 ## 🛠️ Tech Stack & Architecture
 
 ### Frontend
+
 - **Framework**: React 19 (Hooks, Context API, Suspense)
 - **Tooling**: Vite 8 with Rolldown compilation
 - **Styling**: Tailwind CSS with custom Glassmorphism & Aurora animations
@@ -39,6 +40,7 @@
 - **Celebration**: Canvas-Confetti & Web Audio API synthesis
 
 ### Backend
+
 - **Runtime**: Node.js (ESM modules)
 - **API Framework**: Express.js with CORS, Morgan logging & Security headers
 - **Database**: SQLite3 in Write-Ahead Logging (WAL) mode
@@ -49,10 +51,12 @@
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
+
 - **Node.js** v18+ installed
 - **Git** installed
 
 ### 2. Installation
+
 Clone the repository and install dependencies for both frontend and backend:
 
 ```bash
@@ -130,4 +134,5 @@ STUDENTHUB/
 ---
 
 ## 📄 License
+
 ISC License — Created for students aiming for academic mastery with zero excuses.
