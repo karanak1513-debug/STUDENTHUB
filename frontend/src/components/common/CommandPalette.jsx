@@ -256,7 +256,10 @@ export default function CommandPalette({ isOpen, onClose }) {
               <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-[#1a1a24] font-bold">↵</kbd> to select
             </span>
           </div>
-          <span className="text-blue-600 font-bold">Scholara Red & Blue OS</span>
+          <div className="flex items-center gap-1.5">
+            <img src="/logo.svg" alt="Scholara Logo" className="w-4 h-4 rounded-full" />
+            <span className="text-blue-600 dark:text-blue-400 font-bold">Scholara OS</span>
+          </div>
         </div>
       </div>
     </div>

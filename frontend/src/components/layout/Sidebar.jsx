@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
+import ScholaraLogo from '../common/ScholaraLogo';
 
 export default function Sidebar() {
   const {
@@ -48,26 +49,11 @@ export default function Sidebar() {
     >
       {/* Brand & Collapse Header */}
       <div className="mb-4 flex items-center justify-between px-2">
-        <div className="flex items-center gap-2.5">
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-red-600 rounded-xl blur opacity-40 group-hover:opacity-75 transition duration-300"></div>
-            <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-blue-700 to-red-600 flex items-center justify-center text-white shadow-md">
-              <span className="material-symbols-outlined text-[18px] font-bold">bolt</span>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-sm font-black tracking-tight text-slate-900 dark:text-white uppercase leading-none">
-              Scholara <span className="text-blue-600 dark:text-blue-400">OS</span>
-            </h2>
-            <p className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-0.5">
-              Executive Student OS
-            </p>
-          </div>
-        </div>
+        <ScholaraLogo size="md" />
 
         <button
           onClick={toggleSidebar}
-          className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-all active:scale-95"
+          className="p-1.5 rounded-xl text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-all active:scale-95"
           title="Hide Sidebar (⌘B)"
           id="hide-sidebar-btn"
         >

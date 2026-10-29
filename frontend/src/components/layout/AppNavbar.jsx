@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
+import ScholaraLogo from '../common/ScholaraLogo';
 
 export default function AppNavbar({ onOpenSearch }) {
   const location = useLocation();
@@ -67,8 +68,13 @@ export default function AppNavbar({ onOpenSearch }) {
           </motion.button>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 hidden sm:inline">
-              Scholara
+            {isSidebarHidden && (
+              <div className="mr-1">
+                <ScholaraLogo size="xs" showText={false} />
+              </div>
+            )}
+            <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 hidden sm:inline">
+              Scholara OS
             </span>
             <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
             <h1 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
