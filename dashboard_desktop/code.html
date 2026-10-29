@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Student Productivity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#4d44e3",
+                        "on-tertiary-container": "#ffd2be",
+                        "outline": "#777587",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-surface": "#1b1b24",
+                        "on-surface-variant": "#464555",
+                        "tertiary": "#7e3000",
+                        "secondary-fixed": "#ffdad8",
+                        "tertiary-container": "#a44100",
+                        "surface-dim": "#dcd8e5",
+                        "surface-container-high": "#eae6f4",
+                        "inverse-on-surface": "#f3effc",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "primary": "#3525cd",
+                        "background": "#fcf8ff",
+                        "on-secondary-fixed": "#410006",
+                        "primary-fixed": "#e2dfff",
+                        "surface": "#fcf8ff",
+                        "on-primary-container": "#dad7ff",
+                        "surface-variant": "#e4e1ee",
+                        "on-background": "#1b1b24",
+                        "secondary-container": "#ff6b6b",
+                        "on-secondary-container": "#6d0010",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f5f2ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "surface-container": "#f0ecf9",
+                        "surface-bright": "#fcf8ff",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#0f0069",
+                        "inverse-primary": "#c3c0ff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "outline-variant": "#c7c4d8",
+                        "inverse-surface": "#302f39",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-tertiary-fixed": "#351000",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "margin-desktop": "40px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    },
+                    "boxShadow": {
+                        "z1": "0 2px 4px rgba(0,0,0,0.04)",
+                        "z2": "0 6px 12px rgba(79, 70, 229, 0.08)",
+                        "z3": "0 12px 24px rgba(0,0,0,0.12)"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0;
+        }
+
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .progress-circle {
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+    <!-- SideNavBar (Desktop) -->
+    <nav
+        class="hidden md:flex flex-col py-lg px-md h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-surface-dim bg-surface-container-low dark:bg-surface-container-low shadow-sm z-40">
+        <div class="flex items-center gap-md mb-xl pl-2">
+            <img alt="Student Profile Avatar"
+                class="w-10 h-10 rounded-full object-cover border-2 border-primary-container"
+                data-alt="A small, professional avatar portrait of a female university student in her early twenties. She has a bright, confident smile and is wearing casual but neat academic attire, perhaps a light sweater. The lighting is soft and natural, suggesting a morning study session. The background is slightly blurred but hints at a modern university library or campus coffee shop. The overall tone is approachable, focused, and energetic, fitting for a student productivity application profile picture."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-t_qC-HOnFHEAir_lGQ58AXq7X7EuOU4KKb0Zt808fn8VYBEXt7aSj6ahxMwK4TCqpZFUZ5bfET1ZEubT40okSUDMZxJ-PR1T23uklJE-bVXRjvjp6POKfGVLuHQuTQN5ItOlJxMu2rvg-KUeyB-8BO5QWLitVvq8x7yRkvn8AO5bsdchiQcpocxAqXBpjMMAWsoKKDl2xuljmoxNlqFCxyX1H4N-nV8-2mTMl79y3nIAngg1fypzhA" />
+            <div>
+                <h2
+                    class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed text-lg leading-tight">
+                    Yug</h2>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">UG Student</p>
+            </div>
+        </div>
+        <button
+            class="mb-lg w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md shadow-z1 hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            New Task
+        </button>
+        <ul class="flex-1 space-y-2">
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg bg-surface-container-high dark:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-primary dark:text-primary-fixed font-bold border-r-4 border-primary dark:border-primary-fixed"
+                    href="#">
+                    <span class="material-symbols-outlined filled-icon">dashboard</span>
+                    <span class="font-label-md text-label-md">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-on-surface-variant dark:text-outline"
+                    href="#">
+                    <span class="material-symbols-outlined">checklist</span>
+                    <span class="font-label-md text-label-md">To-Do</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-on-surface-variant dark:text-outline"
+                    href="#">
+                    <span class="material-symbols-outlined">assignment</span>
+                    <span class="font-label-md text-label-md">Assignments</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-on-surface-variant dark:text-outline"
+                    href="#">
+                    <span class="material-symbols-outlined">schedule</span>
+                    <span class="font-label-md text-label-md">Routine</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-on-surface-variant dark:text-outline"
+                    href="#">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    <span class="font-label-md text-label-md">Timetable</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-md py-3 px-4 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 active:scale-90 transition-transform text-on-surface-variant dark:text-outline"
+                    href="#">
+                    <span class="material-symbols-outlined">ads_click</span>
+                    <span class="font-label-md text-label-md">Goals</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- TopAppBar (Mobile) -->
+    <header
+        class="md:hidden flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-md max-w-full full-width top-0 bg-background dark:bg-background flat no shadows z-40 sticky">
+        <h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface-variant">Sarah</h1>
+        <div class="flex items-center gap-4">
+            <span
+                class="material-symbols-outlined cursor-pointer active:opacity-70 text-on-surface-variant hover:text-primary transition-colors">notifications</span>
+            <span
+                class="material-symbols-outlined cursor-pointer active:opacity-70 text-on-surface-variant hover:text-primary transition-colors">settings</span>
+            <img alt="Sarah's Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant"
+                data-alt="A small, professional avatar portrait of a female university student in her early twenties. She has a bright, confident smile and is wearing casual but neat academic attire, perhaps a light sweater. The lighting is soft and natural, suggesting a morning study session. The background is slightly blurred but hints at a modern university library or campus coffee shop. The overall tone is approachable, focused, and energetic, fitting for a student productivity application profile picture."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJkpoOU2H6H7AnHzxTGlf3eyZg0nZ8swvuxq-z_waL9FHRvUsBGieuIISEOhP-s4G5Ug701xwd-KCHZFJkVy5EpCnwV3tm9n2owWsU1dN2UTUAMRNNQ3l7B7qMHlMMzhgNAjng8AGbuIp3uz5AV_QS5ocGPzbDDTeZZ8aEfpgsVpCuyTwjmqs-CPXtLNMYQIhrvibb4IyyK_v3f1ec_s21HyDqPVKLyhTfLZ6QDgxJ1TGtICH_E9rRmw" />
+        </div>
+    </header>
+    <!-- Main Canvas -->
+    <main class="flex-1 md:ml-64 p-margin-mobile md:p-margin-desktop mb-24 md:mb-0 max-w-7xl mx-auto w-full">
+        <!-- Header -->
+        <header class="mb-lg">
+            <h1
+                class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">
+                Good Morning, Sarah · Master’s in CS</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Let's make today productive.</p>
+        </header>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+            <!-- Center Column (Main Content) -->
+            <div class="lg:col-span-8 space-y-lg">
+                <!-- Hero Section: Focus Hub -->
+                <section class="bg-surface rounded-xl shadow-z1 border border-surface-variant overflow-hidden relative">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10"></div>
+                    <div class="p-lg flex flex-col md:flex-row items-center justify-between gap-lg">
+                        <div class="flex-1">
+                            <h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Today's Focus Hub</h2>
+                            <p class="font-body-md text-body-md text-on-surface-variant mb-md">You're on a roll. Keep up
+                                the momentum!</p>
+                            <div class="flex items-center gap-md mb-lg">
+                                <div
+                                    class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full border border-surface-variant">
+                                    <span
+                                        class="material-symbols-outlined text-secondary-container text-[18px] filled-icon">local_fire_department</span>
+                                    <span class="font-label-md text-label-md text-on-surface">14 Day Streak</span>
+                                </div>
+                                <div
+                                    class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full border border-surface-variant">
+                                    <span class="material-symbols-outlined text-primary text-[18px]">task_alt</span>
+                                    <span class="font-label-md text-label-md text-on-surface">3/5 Tasks</span>
+                                </div>
+                            </div>
+                            <button
+                                class="bg-primary text-on-primary px-6 py-3 rounded-lg font-label-md text-label-md shadow-z1 hover:bg-primary-container hover:shadow-z2 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined">timer</span>
+                                Start Pomodoro
+                            </button>
+                        </div>
+                        <!-- Progress Meter -->
+                        <div class="relative w-32 h-32 flex-shrink-0">
+                            <svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+                                <circle class="text-surface-variant" cx="50" cy="50" fill="none" r="45"
+                                    stroke="currentColor" stroke-width="8"></circle>
+                                <circle class="text-primary progress-circle" cx="50" cy="50" fill="none" r="45"
+                                    stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="113"
+                                    stroke-linecap="round" stroke-width="8"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="font-headline-md text-headline-md text-primary">60%</span>
+                                <span
+                                    class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Done</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Up Next (Horizontal Scroll) -->
+                <section>
+                    <div class="flex items-center justify-between mb-md">
+                        <h3 class="font-label-md text-label-md text-on-surface uppercase tracking-widest">Up Next</h3>
+                        <a class="font-label-sm text-label-sm text-primary hover:underline" href="#">View All</a>
+                    </div>
+                    <div class="flex overflow-x-auto gap-md pb-4 snap-x snap-mandatory hide-scrollbar"
+                        style="scrollbar-width: none;">
+                        <!-- Class Card 1 -->
+                        <div
+                            class="snap-start shrink-0 w-72 bg-surface border border-surface-variant rounded-xl p-md shadow-z1 hover:shadow-z2 transition-shadow cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                            <div class="flex justify-between items-start mb-sm">
+                                <span
+                                    class="bg-primary/10 text-primary font-label-sm text-label-sm px-2 py-1 rounded">CS501</span>
+                                <span
+                                    class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">more_horiz</span>
+                            </div>
+                            <h4 class="font-headline-md text-headline-md text-on-surface text-lg leading-tight mb-xs">
+                                Advanced Algorithms</h4>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">schedule</span> 10:00 AM - 11:30 AM
+                            </p>
+                            <div class="flex items-center gap-2 border-t border-surface-variant pt-3 mt-auto">
+                                <span class="material-symbols-outlined text-outline-variant">location_on</span>
+                                <span class="font-body-sm text-body-sm text-on-surface-variant">Room 402, Tech
+                                    Hub</span>
+                            </div>
+                        </div>
+                        <!-- Class Card 2 -->
+                        <div
+                            class="snap-start shrink-0 w-72 bg-surface border border-surface-variant rounded-xl p-md shadow-z1 hover:shadow-z2 transition-shadow cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
+                            <div class="flex justify-between items-start mb-sm">
+                                <span
+                                    class="bg-secondary-container/10 text-secondary-container font-label-sm text-label-sm px-2 py-1 rounded">ML405</span>
+                                <span
+                                    class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">more_horiz</span>
+                            </div>
+                            <h4 class="font-headline-md text-headline-md text-on-surface text-lg leading-tight mb-xs">
+                                Machine Learning Labs</h4>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">schedule</span> 1:00 PM - 3:00 PM
+                            </p>
+                            <div class="flex items-center gap-2 border-t border-surface-variant pt-3 mt-auto">
+                                <span class="material-symbols-outlined text-outline-variant">location_on</span>
+                                <span class="font-body-sm text-body-sm text-on-surface-variant">Virtual Lab A</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- High Priority Dues -->
+                <section class="bg-surface rounded-xl shadow-z1 border border-surface-variant p-md">
+                    <div class="flex items-center justify-between mb-md border-b border-surface-variant pb-3">
+                        <h3
+                            class="font-label-md text-label-md text-on-surface uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-secondary-container text-[18px]">warning</span>
+                            High Priority Dues
+                        </h3>
+                    </div>
+                    <ul class="space-y-1">
+                        <!-- Task 1 -->
+                        <li
+                            class="flex items-start gap-3 p-2 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+                            <button
+                                class="mt-0.5 text-outline-variant group-hover:text-primary transition-colors focus:outline-none">
+                                <span class="material-symbols-outlined">radio_button_unchecked</span>
+                            </button>
+                            <div class="flex-1">
+                                <p class="font-body-md text-body-md text-on-surface leading-snug">Submit Research
+                                    Proposal Draft</p>
+                                <p
+                                    class="font-body-sm text-body-sm text-secondary-container flex items-center gap-1 mt-0.5">
+                                    <span class="material-symbols-outlined text-[14px]">event</span> Today, 11:59 PM
+                                </p>
+                            </div>
+                            <span
+                                class="bg-secondary-container/10 text-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded">CS501</span>
+                        </li>
+                        <!-- Task 2 -->
+                        <li
+                            class="flex items-start gap-3 p-2 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+                            <button
+                                class="mt-0.5 text-outline-variant group-hover:text-primary transition-colors focus:outline-none">
+                                <span class="material-symbols-outlined">radio_button_unchecked</span>
+                            </button>
+                            <div class="flex-1">
+                                <p class="font-body-md text-body-md text-on-surface leading-snug">Complete Data Sets
+                                    Analysis</p>
+                                <p
+                                    class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+                                    <span class="material-symbols-outlined text-[14px]">event</span> Tomorrow, 5:00 PM
+                                </p>
+                            </div>
+                            <span
+                                class="bg-primary/10 text-primary font-label-sm text-label-sm px-2 py-0.5 rounded">ML405</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <!-- Right Sidebar -->
+            <div class="lg:col-span-4 space-y-lg">
+                <!-- Mini Calendar -->
+                <section class="bg-surface rounded-xl shadow-z1 border border-surface-variant p-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-label-md text-label-md text-on-surface font-bold">October 2023</h3>
+                        <div class="flex gap-1">
+                            <button class="p-1 rounded hover:bg-surface-container-low text-on-surface-variant"><span
+                                    class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+                            <button class="p-1 rounded hover:bg-surface-container-low text-on-surface-variant"><span
+                                    class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                        <div class="font-label-sm text-label-sm text-outline-variant">S</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">M</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">T</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">W</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">T</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">F</div>
+                        <div class="font-label-sm text-label-sm text-outline-variant">S</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center">
+                        <!-- Simplified Calendar Grid for brevity -->
+                        <div class="p-1.5 font-body-sm text-body-sm text-outline-variant">1</div>
+                        <div
+                            class="p-1.5 font-body-sm text-body-sm text-on-surface hover:bg-surface-container cursor-pointer rounded-full">
+                            2</div>
+                        <div
+                            class="p-1.5 font-body-sm text-body-sm text-on-surface hover:bg-surface-container cursor-pointer rounded-full">
+                            3</div>
+                        <div
+                            class="p-1.5 font-body-sm text-body-sm bg-primary text-on-primary rounded-full cursor-pointer shadow-z1">
+                            4</div>
+                        <div
+                            class="p-1.5 font-body-sm text-body-sm text-on-surface hover:bg-surface-container cursor-pointer rounded-full relative">
+                            5<span
+                                class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-secondary-container rounded-full"></span>
+                        </div>
+                        <div
+                            class="p-1.5 font-body-sm text-body-sm text-on-surface hover:bg-surface-container cursor-pointer rounded-full">
+                            6</div>
+                        <div class="p-1.5 font-body-sm text-body-sm text-outline-variant">7</div>
+                    </div>
+                </section>
+                <!-- Daily Habits Tracker -->
+                <section class="bg-surface rounded-xl shadow-z1 border border-surface-variant p-md">
+                    <h3
+                        class="font-label-md text-label-md text-on-surface uppercase tracking-widest mb-md border-b border-surface-variant pb-3">
+                        Habits &amp; Energy</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-body-sm text-body-sm text-on-surface flex items-center gap-2"><span
+                                        class="material-symbols-outlined text-outline-variant text-[18px]">water_drop</span>
+                                    Hydration</span>
+                                <span class="font-label-sm text-label-sm text-primary">2/4 Liters</span>
+                            </div>
+                            <div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-body-sm text-body-sm text-on-surface flex items-center gap-2"><span
+                                        class="material-symbols-outlined text-outline-variant text-[18px]">menu_book</span>
+                                    Reading</span>
+                                <span class="font-label-sm text-label-sm text-primary">30/60 Mins</span>
+                            </div>
+                            <div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    <!-- BottomNavBar (Mobile) -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-surface dark:bg-surface-dim shadow-[0_-4px_12px_rgba(0,0,0,0.04)] fixed bottom-0 w-full rounded-t-xl tap-highlight-transparent">
+        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:bg-surface-variant"
+            href="#">
+            <span class="material-symbols-outlined filled-icon">home</span>
+            <span class="font-label-sm text-label-sm mt-1">Home</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant px-4 py-1"
+            href="#">
+            <span class="material-symbols-outlined">checklist</span>
+            <span class="font-label-sm text-label-sm mt-1">To-Do</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant px-4 py-1"
+            href="#">
+            <span class="material-symbols-outlined">assignment</span>
+            <span class="font-label-sm text-label-sm mt-1">Assign</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant px-4 py-1"
+            href="#">
+            <span class="material-symbols-outlined">schedule</span>
+            <span class="font-label-sm text-label-sm mt-1">Routine</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant px-4 py-1"
+            href="#">
+            <span class="material-symbols-outlined">ads_click</span>
+            <span class="font-label-sm text-label-sm mt-1">Goals</span>
+        </a>
+    </nav>
+</body>
+
+</html>

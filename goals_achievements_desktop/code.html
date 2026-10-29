@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Goals &amp; Achievements - Sarah UG Student</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#4d44e3",
+                        "on-tertiary-container": "#ffd2be",
+                        "outline": "#777587",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-surface": "#1b1b24",
+                        "on-surface-variant": "#464555",
+                        "tertiary": "#7e3000",
+                        "secondary-fixed": "#ffdad8",
+                        "tertiary-container": "#a44100",
+                        "surface-dim": "#dcd8e5",
+                        "surface-container-high": "#eae6f4",
+                        "inverse-on-surface": "#f3effc",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "primary": "#3525cd",
+                        "background": "#fcf8ff",
+                        "on-secondary-fixed": "#410006",
+                        "primary-fixed": "#e2dfff",
+                        "surface": "#fcf8ff",
+                        "on-primary-container": "#dad7ff",
+                        "surface-variant": "#e4e1ee",
+                        "on-background": "#1b1b24",
+                        "secondary-container": "#ff6b6b",
+                        "on-secondary-container": "#6d0010",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f5f2ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "surface-container": "#f0ecf9",
+                        "surface-bright": "#fcf8ff",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#0f0069",
+                        "inverse-primary": "#c3c0ff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "outline-variant": "#c7c4d8",
+                        "inverse-surface": "#302f39",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-tertiary-fixed": "#351000",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "margin-desktop": "40px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Shadows */
+        .shadow-z1 { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04); }
+        .shadow-z2 { box-shadow: 0 6px 12px rgba(53, 37, 205, 0.08); }
+        .shadow-z3 { box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12); }
+        
+        /* Progress Ring Animation */
+        @keyframes progress {
+            from { stroke-dashoffset: 251.2; }
+            to { stroke-dashoffset: 50.24; /* 80% */ }
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 1s ease-in-out;
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            animation: progress 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<nav class="hidden md:flex flex-col py-lg px-md h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-surface-dim shadow-sm z-40 bg-surface-container-low border-r border-surface-container-highest">
+<!-- Header / Profile -->
+<div class="flex items-center gap-md mb-xl px-sm">
+<img alt="Student Profile Avatar" class="w-12 h-12 rounded-full border-2 border-primary object-cover" data-alt="A clean, minimalist 3D rendering of a stylized female student avatar smiling, soft lighting, vibrant pastel colors, modern digital art style, high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy5vTiiDNhdxV-99LGKKCS3nrKaO3IbjquW8UDs7ZlUBB61MhJpO-LG038D8xRv45TibpmcUDA6GEJAfJFm8vVdxNNqyFFD1z6E4LBNcnzJdkpKWA6Gs0qB0MqHKP2tbHUc0YoUamvhscqVDYGyihRLltZJVv3frK5Tiq2DkjTdjo7m_OJy4-S4CIZLrf0SHdzmyuYNxp2d2OfCN0DR-vbTFzL1EREfBUVGqoPQ5dRH7bs8ax2gQitsQ"/>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Sarah</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">UG Student</p>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-lg mb-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-z1 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Task
+        </button>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-xs flex-grow">
+<!-- Dashboard (Inactive) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- To-Do (Inactive) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-label-md text-label-md">To-Do</span>
+</a>
+<!-- Assignments (Inactive) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Assignments</span>
+</a>
+<!-- Routine (Inactive) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-md text-label-md">Routine</span>
+</a>
+<!-- Timetable (Inactive) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Timetable</span>
+</a>
+<!-- Goals (ACTIVE) -->
+<a class="flex items-center gap-md px-sm py-sm rounded-lg bg-surface-container-high text-primary font-bold border-r-4 border-primary scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined filled text-primary" data-icon="ads_click">ads_click</span>
+<span class="font-label-md text-label-md text-primary">Goals</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar (Visible on all, structural placeholder for Mobile Nav later) -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-md max-w-full bg-background sticky top-0 z-30">
+<!-- Mobile Brand (Hidden on Desktop) -->
+<div class="md:hidden flex items-center gap-sm">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">Sarah</h1>
+</div>
+<!-- Desktop Page Title -->
+<div class="hidden md:block">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Goals &amp; Achievements</h1>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-md text-on-surface-variant">
+<button class="hover:text-primary transition-colors cursor-pointer active:opacity-70 p-xs rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="hover:text-primary transition-colors cursor-pointer active:opacity-70 p-xs rounded-full hover:bg-surface-container-high relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-secondary-container rounded-full"></span>
+</button>
+<button class="hover:text-primary transition-colors cursor-pointer active:opacity-70 p-xs rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<!-- Mobile Avatar Placeholder -->
+<img alt="Sarah's Profile" class="w-8 h-8 rounded-full border-2 border-primary object-cover md:hidden" data-alt="A clean, minimalist 3D rendering of a stylized female student avatar smiling, soft lighting, vibrant pastel colors, modern digital art style, high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3YoJMU46G8XR8NBWkeb5Y7PmiamLrCEmNo_qexNYamFwe3PVihn_MHJQFcRg0Pmhm0X7ROv54UCjP7mI8fNzFkJA_flS1oeBPcz6gG19y-19aZLAcj3Jb1sULfFUN-rzYqr4MU3moc-M0L4BLbLP09mQEiGNoKqdn11flbGSho8iUPock-08Vpe_Gi0Bi9l_9L6Lyv_URIPZ4PbYelyNhDGzYhBkz7uVTnrvYUvFSWD29Yp_YM9-btw"/>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-margin-mobile md:p-margin-desktop space-y-lg flex-1 overflow-y-auto pb-24 md:pb-margin-desktop">
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- GPA Ring Card -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-surface-container-highest relative overflow-hidden group hover:shadow-z2 transition-shadow">
+<div class="absolute top-0 right-0 p-sm opacity-20">
+<span class="material-symbols-outlined text-[64px]" data-icon="school">school</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md">Current GPA</h3>
+<div class="flex items-center justify-between">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<svg class="transform -rotate-90 w-24 h-24">
+<circle class="text-surface-container-high" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary progress-ring-circle" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">3.8</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Target</p>
+<p class="font-headline-md text-headline-md text-primary">4.0</p>
+<div class="mt-xs inline-flex items-center gap-xs bg-surface-container-low px-2 py-1 rounded-sm text-secondary-container">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-sm text-label-sm">+0.2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Study Hours Card -->
+<div class="bg-primary-container text-on-primary-container rounded-xl p-md shadow-z1 relative overflow-hidden group hover:shadow-z2 transition-shadow">
+<div class="absolute inset-0 bg-gradient-to-br from-primary to-primary-container opacity-50"></div>
+<!-- Abstract Shader Placeholder -->
+
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md opacity-80">Weekly Study Hours</h3>
+<span class="material-symbols-outlined text-[24px]">timer</span>
+</div>
+<div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-lg text-display-lg font-bold">24</span>
+<span class="font-body-md text-body-md opacity-80">hrs</span>
+</div>
+<p class="font-body-sm text-body-sm mt-xs opacity-80">12 hrs remaining to goal</p>
+<!-- Mini Progress -->
+<div class="w-full h-2 bg-on-primary-container/20 rounded-full mt-sm overflow-hidden">
+<div class="h-full bg-on-primary-container rounded-full" style="width: 66%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- On-Time Rate Card -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-surface-container-highest flex flex-col justify-between group hover:shadow-z2 transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<h3 class="font-label-md text-label-md text-on-surface-variant">On-Time Submission</h3>
+<div class="p-xs bg-surface-container-low rounded-lg text-secondary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+</div>
+</div>
+<div>
+<div class="flex items-end gap-sm mb-xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface">94%</span>
+<span class="font-body-sm text-body-sm text-outline mb-1">this semester</span>
+</div>
+<!-- Mini Bar Chart -->
+<div class="flex items-end h-12 gap-1 mt-md">
+<div class="flex-1 bg-surface-container-high rounded-t-sm relative group/bar">
+<div class="absolute bottom-0 w-full bg-primary-fixed-dim rounded-t-sm transition-all h-[80%] group-hover/bar:bg-primary"></div>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm relative group/bar">
+<div class="absolute bottom-0 w-full bg-primary-fixed-dim rounded-t-sm transition-all h-[95%] group-hover/bar:bg-primary"></div>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm relative group/bar">
+<div class="absolute bottom-0 w-full bg-primary-fixed-dim rounded-t-sm transition-all h-[70%] group-hover/bar:bg-primary"></div>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm relative group/bar">
+<div class="absolute bottom-0 w-full bg-primary-fixed-dim rounded-t-sm transition-all h-[100%] group-hover/bar:bg-primary"></div>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm relative group/bar">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm transition-all h-[94%] shadow-z2"></div>
+</div>
+</div>
+<div class="flex justify-between mt-1 text-[10px] text-outline font-label-sm uppercase">
+<span>W1</span><span>W2</span><span>W3</span><span>W4</span><span class="text-primary">W5</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Milestones & Badges Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Active Goals (List with Progress) -->
+<div class="bg-surface rounded-xl p-0 shadow-z1 border border-surface-container-highest overflow-hidden flex flex-col">
+<div class="p-md border-b border-surface-container-highest flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface">Active Milestones</h2>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View All</button>
+</div>
+<div class="flex-1 overflow-y-auto max-h-[400px]">
+<!-- Goal Item 1 -->
+<div class="p-md border-b border-surface-container-highest hover:bg-surface-container-lowest transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="inline-block px-2 py-1 bg-primary/10 text-primary font-label-sm text-label-sm rounded-sm mb-xs">Research</span>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Read 5 Research Papers</h4>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">3/5</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-500 ease-out group-hover:bg-primary-container" style="width: 60%"></div>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-sm">Due: Friday, 11:59 PM</p>
+</div>
+<!-- Goal Item 2 -->
+<div class="p-md border-b border-surface-container-highest hover:bg-surface-container-lowest transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="inline-block px-2 py-1 bg-secondary-container/20 text-secondary-container font-label-sm text-label-sm rounded-sm mb-xs">Exam Prep</span>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Complete CS101 Mock Exam</h4>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">85%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full transition-all duration-500 ease-out" style="width: 85%"></div>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-sm">Due: Tomorrow, 10:00 AM</p>
+</div>
+<!-- Goal Item 3 -->
+<div class="p-md hover:bg-surface-container-lowest transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="inline-block px-2 py-1 bg-outline-variant/30 text-on-surface-variant font-label-sm text-label-sm rounded-sm mb-xs">Project</span>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Draft Final Essay Outline</h4>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">0%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-500 ease-out w-0"></div>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-sm">Due: Next Week</p>
+</div>
+</div>
+</div>
+<!-- Badges & Unlocks (Grid) -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-surface-container-highest">
+<div class="flex justify-between items-center mb-md pb-md border-b border-surface-container-highest">
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface">Badges &amp; Unlocks</h2>
+<span class="font-label-md text-label-md bg-surface-container-high px-3 py-1 rounded-full text-on-surface-variant">Level 12</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-md">
+<!-- Badge 1: Night Owl -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md flex flex-col items-center justify-center text-center hover:shadow-z2 transition-shadow cursor-pointer relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-16 h-16 rounded-full bg-inverse-on-surface flex items-center justify-center mb-sm relative z-10">
+<span class="material-symbols-outlined text-[32px] text-primary" data-icon="dark_mode">dark_mode</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface relative z-10">Night Owl</h4>
+<p class="font-body-sm text-body-sm text-outline text-[11px] mt-1 relative z-10">Study past midnight</p>
+</div>
+<!-- Badge 2: Exam Ace -->
+<div class="bg-surface-container-lowest border border-secondary-container/30 rounded-lg p-md flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(255,107,107,0.1)] hover:shadow-[0_0_20px_rgba(255,107,107,0.2)] transition-shadow cursor-pointer relative group">
+<div class="absolute -top-2 -right-2 bg-secondary-container text-on-secondary text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm">NEW</div>
+<div class="w-16 h-16 rounded-full bg-error-container flex items-center justify-center mb-sm relative z-10">
+<span class="material-symbols-outlined text-[32px] text-secondary-container filled" data-icon="verified">verified</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface relative z-10">Exam Ace</h4>
+<p class="font-body-sm text-body-sm text-outline text-[11px] mt-1 relative z-10">Score &gt;90%</p>
+</div>
+<!-- Badge 3: Streak Master -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md flex flex-col items-center justify-center text-center hover:shadow-z2 transition-shadow cursor-pointer relative group">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-sm relative z-10">
+<span class="material-symbols-outlined text-[32px] text-tertiary-container" data-icon="local_fire_department">local_fire_department</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface relative z-10">7-Day Streak</h4>
+<p class="font-body-sm text-body-sm text-outline text-[11px] mt-1 relative z-10">Log in daily</p>
+</div>
+<!-- Locked Badge -->
+<div class="bg-surface-container-low border border-surface-container-high border-dashed rounded-lg p-md flex flex-col items-center justify-center text-center opacity-60">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center mb-sm filter grayscale">
+<span class="material-symbols-outlined text-[28px] text-outline" data-icon="lock">lock</span>
+</div>
+<h4 class="font-label-md text-label-md text-outline">Early Bird</h4>
+<p class="font-body-sm text-body-sm text-outline/50 text-[11px] mt-1">Study before 6 AM</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Visible only on Mobile, md:hidden) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-surface dark:bg-surface-dim shadow-[0_-4px_12px_rgba(0,0,0,0.04)] rounded-t-xl">
+<!-- Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant tap-highlight-transparent p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1 text-[10px]">Home</span>
+</a>
+<!-- To-Do (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant tap-highlight-transparent p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-label-sm text-label-sm mt-1 text-[10px]">To-Do</span>
+</a>
+<!-- Assign (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant tap-highlight-transparent p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-sm text-label-sm mt-1 text-[10px]">Assign</span>
+</a>
+<!-- Routine (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant tap-highlight-transparent p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm mt-1 text-[10px]">Routine</span>
+</a>
+<!-- Goals (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:bg-surface-variant tap-highlight-transparent transition-colors" href="#">
+<span class="material-symbols-outlined filled" data-icon="ads_click">ads_click</span>
+<span class="font-label-sm text-label-sm mt-1 text-[10px]">Goals</span>
+</a>
+</nav>
+</body></html>

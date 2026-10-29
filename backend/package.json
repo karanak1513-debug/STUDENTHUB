@@ -1,0 +1,29 @@
+{
+  "name": "scholara-backend",
+  "version": "1.0.0",
+  "description": "RESTful API backend for Scholara Student Productivity Hub",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "build": "echo \"No build step required for backend\"",
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test-endpoints.js"
+  },
+  "keywords": [
+    "express",
+    "scholara",
+    "student-productivity",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "sqlite3": "^6.0.1",
+    "ws": "^8.22.0"
+  }
+}

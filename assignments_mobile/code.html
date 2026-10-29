@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Assignment Dues</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#4d44e3",
+                        "on-tertiary-container": "#ffd2be",
+                        "outline": "#777587",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-surface": "#1b1b24",
+                        "on-surface-variant": "#464555",
+                        "tertiary": "#7e3000",
+                        "secondary-fixed": "#ffdad8",
+                        "tertiary-container": "#a44100",
+                        "surface-dim": "#dcd8e5",
+                        "surface-container-high": "#eae6f4",
+                        "inverse-on-surface": "#f3effc",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "primary": "#3525cd",
+                        "background": "#fcf8ff",
+                        "on-secondary-fixed": "#410006",
+                        "primary-fixed": "#e2dfff",
+                        "surface": "#fcf8ff",
+                        "on-primary-container": "#dad7ff",
+                        "surface-variant": "#e4e1ee",
+                        "on-background": "#1b1b24",
+                        "secondary-container": "#ff6b6b",
+                        "on-secondary-container": "#6d0010",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f5f2ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "surface-container": "#f0ecf9",
+                        "surface-bright": "#fcf8ff",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#0f0069",
+                        "inverse-primary": "#c3c0ff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "outline-variant": "#c7c4d8",
+                        "inverse-surface": "#302f39",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-tertiary-fixed": "#351000",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "margin-desktop": "40px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .shadow-z1 { box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .shadow-z2 { box-shadow: 0 6px 12px rgba(53, 37, 205, 0.08); }
+        .tap-highlight-transparent { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-[80px]">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-md max-w-full bg-background dark:bg-background top-0 z-40 sticky">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface-variant">Sarah</h1>
+<div class="flex items-center gap-md">
+<button class="cursor-pointer active:opacity-70 text-on-surface-variant hover:text-primary transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="cursor-pointer active:opacity-70 text-on-surface-variant hover:text-primary transition-colors tap-highlight-transparent">
+<img alt="Sarah's Profile" class="w-[32px] h-[32px] rounded-full object-cover" data-alt="A small, circular avatar image of a young female college student with a bright, welcoming expression, styled in a clean, modern aesthetic with soft lighting against a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb5gvI-UMOr9EQWiIO7yF-nCFaPJ6jH2HiTL38hLdjyVq55yFJ5gAX8T8wI748D-ueXsyEAalrve_-kX2lP4OE1DrifhJDKMCLmGV1si3J6Qbxrz-XkNQ1dH0ZOp-L-DuDYprSNI4cs2O1Q66B2Gpbh9OZQADbNR26p5apos26iiYGdfslPj2sTUncfdwoSHXlCY0XkntzXwcQDhNggYOKFV6gzKuOiFMDnIvu59fWcxLW3P41_XSDAQ"/>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="px-margin-mobile flex flex-col gap-lg">
+<!-- Header Section -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Upcoming Assignments</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">You have 3 tasks due this week. Stay focused.</p>
+</section>
+<!-- Assignments List -->
+<section class="flex flex-col gap-md">
+<!-- High Urgency Card -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-outline-variant flex flex-col gap-md relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
+<div class="flex justify-between items-start pl-sm">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider">Due in 12 Hours</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Advanced Calculus Problem Set</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">MATH301 - Week 6</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="pl-sm flex flex-col gap-xs">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Progress</span>
+<span>80%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 80%;"></div>
+</div>
+</div>
+<div class="pl-sm flex justify-between items-center mt-sm border-t border-surface-container-highest pt-sm">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A small circular avatar of a student looking focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-rV5WTSLGlNjJbzzqOiyxWK8rcbzALcqtS91WxLPnbAJ0Im-QwDPvJicB2XobdCu9LUc01JpnkQTAHEH7go7BhGYp2_ecQNpbTXESA0XcZdr0uQFgC6DPmAUIHX2dJvNBLPbGCdCjVF2_e6f6Jmt71rxD839rjUlmvMOw6xVAtAPF-ycAsH9NL_UitA8E3o9lCDbWDRKWrtI3jaLVYvHuwLR3wQ4C4i1TrgYI5ZUHAhlLeKRKBkTqFg"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A small circular avatar of a student looking thoughtful." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmwiTxz0HNlGKtqoG--PJYbmTHo1h8pCdwYPpu566nU82zpMkd7Wg38q67SnArGYl95qxrVL3LF6ECv-_qgV_NZ0eJSgI8_OLJ-Tv9XtDhWqOuVrg0S372pt34yPr3W1g5cLtOsuvkT-ovOO7RRPCq4V9iiDdStyQKPO88v1iXOqL4LRDUVyuu4iZkCQAj1nX-5w6-wKcQ6jXJrUDON6g92nnhovuTieT4vFDF8WcYFDvpSxq3oimFJw"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-container-high flex items-center justify-center font-label-sm text-label-sm text-on-surface-variant">+2</div>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg font-label-md text-label-md active:scale-95 transition-transform tap-highlight-transparent flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="upload_file">upload_file</span>
+                        Upload
+                    </button>
+</div>
+</div>
+<!-- Medium Urgency Card -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-outline-variant flex flex-col gap-md relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
+<div class="flex justify-between items-start pl-sm">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">Due Tomorrow</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Modern Art Essay</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ART205 - Midterm Project</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="pl-sm flex flex-col gap-xs">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Progress</span>
+<span>30%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 30%;"></div>
+</div>
+</div>
+<div class="pl-sm flex justify-between items-center mt-sm border-t border-surface-container-highest pt-sm">
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-primary-fixed/20 text-primary font-label-sm text-label-sm rounded-md">Drafting</span>
+</div>
+<button class="bg-surface-container-highest text-on-surface px-md py-sm rounded-lg font-label-md text-label-md active:scale-95 transition-transform tap-highlight-transparent flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="notifications">notifications</span>
+                        Remind Me
+                    </button>
+</div>
+</div>
+<!-- Low Urgency Card -->
+<div class="bg-surface rounded-xl p-md shadow-z1 border border-outline-variant flex flex-col gap-md relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-outline"></div>
+<div class="flex justify-between items-start pl-sm">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Due Friday</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Data Structures Lab</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">CS201 - Lab 4</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="pl-sm flex flex-col gap-xs">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Progress</span>
+<span>0%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 0%;"></div>
+</div>
+</div>
+<div class="pl-sm flex justify-between items-center mt-sm border-t border-surface-container-highest pt-sm">
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm rounded-md">Not Started</span>
+</div>
+<button class="bg-surface-container-highest text-on-surface px-md py-sm rounded-lg font-label-md text-label-md active:scale-95 transition-transform tap-highlight-transparent flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="play_arrow">play_arrow</span>
+                        Start
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-surface dark:bg-surface-dim shadow-[0_-4px_12px_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant tap-highlight-transparent active:bg-surface-variant p-2 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant tap-highlight-transparent active:bg-surface-variant p-2 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-label-sm text-label-sm mt-1">To-Do</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 tap-highlight-transparent active:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-label-sm text-label-sm mt-1">Assign</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant tap-highlight-transparent active:bg-surface-variant p-2 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm mt-1">Routine</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant tap-highlight-transparent active:bg-surface-variant p-2 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
+<span class="font-label-sm text-label-sm mt-1">Goals</span>
+</a>
+</nav>
+</body></html>
