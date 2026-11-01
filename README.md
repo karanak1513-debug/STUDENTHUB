@@ -9,6 +9,7 @@
 [![SQLite](https://img.shields.io/badge/SQLite3-WAL_Mode-003B57?logo=sqlite)](https://www.sqlite.org/)
 [![WebSockets](https://img.shields.io/badge/WebSockets-Live_Sync-2563EB)](https://github.com/websockets/ws)
 [![MCP](https://img.shields.io/badge/MCP-SQLite_Compatible-EF4444)](https://modelcontextprotocol.io/)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karanak1513-debug/STUDENTHUB)
 
 ---
 
