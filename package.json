@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Scholara - Student Productivity Hub with Express Backend and React Frontend",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "start": "npm run start --prefix backend",
     "dev": "npm run dev:frontend",

@@ -4,6 +4,9 @@
   "description": "RESTful API backend for Scholara Student Productivity Hub",
   "main": "server.js",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "build": "echo \"No build step required for backend\"",
     "start": "node server.js",
