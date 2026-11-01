@@ -79,3 +79,4 @@ export default function LoadingSpinner({
 
   return <div className="py-12 flex items-center justify-center w-full">{content}</div>;
 }
+
