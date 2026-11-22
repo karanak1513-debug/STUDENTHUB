@@ -1,6 +1,13 @@
 # Scholara OS — Production Deployment & Operations Guide 🚀
 
-This repository is fully configured, secured, and ready for deployment across both **frontend** and **backend**.
+## 🌐 Verified Live Deployment Endpoints
+
+| Environment | Hosting Platform | Public URL | Description |
+| :--- | :--- | :--- | :--- |
+| **Frontend Production** | **Vercel** | [https://scholara-os-ten.vercel.app](https://scholara-os-ten.vercel.app) | React 19 + Vite SPA with Glassmorphic UI & Realtime Sync |
+| **Backend Production** | **Render** | [https://scholara-os.onrender.com](https://scholara-os.onrender.com) | Express + SQLite3 WAL + WebSocket & SSE Stream |
+| **Health Check** | **Render** | [https://scholara-os.onrender.com/api/health](https://scholara-os.onrender.com/api/health) | SQLite WAL Mode & System Telemetry Endpoint |
+| **Vercel Proxy Check** | **Vercel** | [https://scholara-os-ten.vercel.app/api/health](https://scholara-os-ten.vercel.app/api/health) | Proxied `/api/*` rewrite verifying frontend-to-backend linkage |
 
 ---
 

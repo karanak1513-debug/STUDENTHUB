@@ -13,6 +13,17 @@
 
 ---
 
+## 🌐 Live Production Deployments
+
+| Component | Platform | Live URL | Status |
+| :--- | :--- | :--- | :--- |
+| **Frontend Application** | **Vercel** | [https://scholara-os-ten.vercel.app](https://scholara-os-ten.vercel.app) | 🟢 Live & Healthy |
+| **Backend API & Realtime** | **Render** | [https://scholara-os.onrender.com](https://scholara-os.onrender.com) | 🟢 Live & Healthy |
+| **Backend Health Check** | **Render** | [https://scholara-os.onrender.com/api/health](https://scholara-os.onrender.com/api/health) | 🟢 200 OK (SQLite WAL) |
+| **GitHub Repository** | **GitHub** | [https://github.com/karanak1513-debug/STUDENTHUB](https://github.com/karanak1513-debug/STUDENTHUB) | 🟢 Synced `main` |
+
+---
+
 ## ✨ Features & Capabilities
 
 - **100x Glassmorphic Aesthetic**: VisionOS and Linear-inspired frosted glass panels (`backdrop-blur-3xl`), ambient refractive mesh glows in Cobalt Blue and Crimson Red, and sleek micro-interactions.
