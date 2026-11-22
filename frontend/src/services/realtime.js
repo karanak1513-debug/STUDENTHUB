@@ -1,6 +1,39 @@
 // Client Realtime Database Synchronization Service
 // Connects via WebSocket (/ws) with automatic Server-Sent Events (SSE) fallback
 
+function getBackendUrls() {
+  if (typeof window === 'undefined') {
+    return { wsUrl: '', sseUrl: '' };
+  }
+
+  if (import.meta.env.VITE_WS_URL) {
+    const wsUrl = import.meta.env.VITE_WS_URL;
+    const sseUrl = import.meta.env.VITE_API_URL
+      ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/realtime/stream`
+      : '/api/realtime/stream';
+    return { wsUrl, sseUrl };
+  }
+
+  if (import.meta.env.VITE_API_URL) {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+      const urlObj = new URL(apiUrl, window.location.href);
+      const isWss = urlObj.protocol === 'https:';
+      const wsUrl = `${isWss ? 'wss:' : 'ws:'}//${urlObj.host}/ws`;
+      const sseUrl = `${apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`}/realtime/stream`;
+      return { wsUrl, sseUrl };
+    } catch {
+      // Fallback if URL parsing fails
+    }
+  }
+
+  // Same-origin fallback (when frontend is served by the backend or a proxy)
+  const isSecure = window.location.protocol === 'https:';
+  const wsUrl = `${isSecure ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+  const sseUrl = '/api/realtime/stream';
+  return { wsUrl, sseUrl };
+}
+
 class RealtimeClient {
   constructor() {
     this.ws = null;
@@ -29,9 +62,8 @@ class RealtimeClient {
 
   connectWebSocket() {
     try {
-      const isSecure = window.location.protocol === 'https:';
-      const host = window.location.hostname || 'localhost';
-      const wsUrl = `${isSecure ? 'wss:' : 'ws:'}//${host}:5000/ws`;
+      const { wsUrl } = getBackendUrls();
+      if (!wsUrl) return;
 
       this.ws = new WebSocket(wsUrl);
 
@@ -71,8 +103,9 @@ class RealtimeClient {
   connectSSE() {
     if (this.eventSource) return;
     try {
-      const host = window.location.hostname || 'localhost';
-      const sseUrl = `http://${host}:5000/api/realtime/stream`;
+      const { sseUrl } = getBackendUrls();
+      if (!sseUrl) return;
+
       this.eventSource = new EventSource(sseUrl);
 
       this.eventSource.onopen = () => {

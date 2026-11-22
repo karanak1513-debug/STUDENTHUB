@@ -1,5 +1,9 @@
 const RAW_BASE = import.meta.env.VITE_API_URL || '/api';
-const BASE_URL = RAW_BASE.endsWith('/') ? RAW_BASE.slice(0, -1) : RAW_BASE;
+let cleanBase = RAW_BASE.endsWith('/') ? RAW_BASE.slice(0, -1) : RAW_BASE;
+if (cleanBase.startsWith('http') && !cleanBase.endsWith('/api')) {
+  cleanBase = `${cleanBase}/api`;
+}
+const BASE_URL = cleanBase;
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
